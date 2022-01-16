@@ -21,15 +21,15 @@ public static class IsoDateCheater
 
     static readonly string[] DecimalFormats = new[]
     {
-            "yyyy-MM-dd'T'HH:mm:ss'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.f'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.ff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.fff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.ffff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.fffff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
-        };
+        "yyyy-MM-dd'T'HH:mm:ss'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.f'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.ff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.fff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.ffff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.fffff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    };
     const int DecimalIndex = 19;
 
     public static string GetFormat(int decimalCount) =>

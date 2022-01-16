@@ -5,7 +5,7 @@ namespace Epoche.Shared.Json;
 
 public sealed class Int64Converter : JsonConverter<long>
 {
-    public static readonly Int64Converter Instance = new Int64Converter();
+    public static readonly Int64Converter Instance = new();
 
     public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
