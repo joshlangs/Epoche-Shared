@@ -142,6 +142,6 @@ public class IEnumerableExtensionsTests
     public void ExcludeNull_SomeNulls_ReturnsNonNulls()
     {
         var objs = new object?[] { new object(), null, new object(), null };
-        Assert.Equal(objs.Where(x => x != null), objs.ExcludeNull());
+        Assert.Equal(objs.Where(x => x is not null), objs.ExcludeNull());
     }
 }

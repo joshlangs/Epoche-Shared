@@ -649,7 +649,7 @@ public class StringExtensionsTests
         public ByteSeq(ByteSeq prev, byte data) : this(prev, new[] { data }) { }
         public ByteSeq(ByteSeq prev, byte[] data)
         {
-            if (prev != null)
+            if (prev is not null)
             {
                 prev.Next = this;
                 RunningIndex = prev.RunningIndex + prev.Memory.Length;
@@ -662,7 +662,7 @@ public class StringExtensionsTests
         public CharSeq(CharSeq prev, char data) : this(prev, new[] { data }) { }
         public CharSeq(CharSeq prev, char[] data)
         {
-            if (prev != null)
+            if (prev is not null)
             {
                 prev.Next = this;
                 RunningIndex = prev.RunningIndex + prev.Memory.Length;

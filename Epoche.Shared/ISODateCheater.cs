@@ -51,8 +51,7 @@ public static class IsoDateCheater
 
     public static bool TryParse(string? dateString, out DateTime date)
     {
-        if (dateString != null &&
-            dateString.Length > DecimalIndex &&
+        if (dateString?.Length > DecimalIndex &&
             dateString[^1] == 'Z')
         {
             if (dateString[DecimalIndex] == 'Z')
