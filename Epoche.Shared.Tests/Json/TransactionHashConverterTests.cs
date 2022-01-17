@@ -6,11 +6,11 @@ namespace Epoche.Shared.Json;
 
 public class TransactionHashConverterTests
 {
-    static readonly JsonSerializerOptions DefaultJsonSerializerOptions = new JsonSerializerOptions
+    static readonly JsonSerializerOptions DefaultJsonSerializerOptions = new()
     {
         Converters = { TransactionHashConverter.Default }
     };
-    static readonly JsonSerializerOptions AllowEmptyJsonSerializerOptions = new JsonSerializerOptions
+    static readonly JsonSerializerOptions AllowEmptyJsonSerializerOptions = new()
     {
         Converters = { new TransactionHashConverter(32, 32, true) }
     };

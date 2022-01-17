@@ -5,7 +5,7 @@ namespace Epoche.Shared.Json;
 
 public sealed class ByteArrayConverter : JsonConverter<byte[]>
 {
-    public static readonly ByteArrayConverter Instance = new ByteArrayConverter();
+    public static readonly ByteArrayConverter Instance = new();
 
     public override byte[] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

@@ -6,7 +6,7 @@ namespace Epoche.Shared.Json;
 
 public class Int64ConverterTests
 {
-    static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+    static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         Converters = { new Int64Converter() }
     };

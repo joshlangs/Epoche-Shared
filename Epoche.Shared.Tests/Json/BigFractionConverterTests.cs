@@ -6,7 +6,7 @@ namespace Epoche.Shared.Json;
 
 public class BigFractionConverterTests
 {
-    static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+    static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         Converters = { new BigFractionConverter() }
     };

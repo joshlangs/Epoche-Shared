@@ -6,7 +6,7 @@ namespace Epoche.Shared.Json;
 
 public sealed class IsoDateTimeConverterTests
 {
-    static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+    static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         Converters = { new IsoDateTimeConverter() }
     };

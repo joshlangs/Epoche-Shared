@@ -6,7 +6,7 @@ namespace Epoche.Shared.Json;
 
 public class ByteArrayConverterTests
 {
-    static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+    static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         Converters = { new ByteArrayConverter() }
     };
@@ -27,7 +27,7 @@ public class ByteArrayConverterTests
     public void Read_EmptyString_ReturnsEmptyArray()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""""}", JsonSerializerOptions);
-        Assert.Equal(new byte[] { }, obj?.A);
+        Assert.Equal(Array.Empty<byte>(), obj?.A);
     }
 
     [Fact]

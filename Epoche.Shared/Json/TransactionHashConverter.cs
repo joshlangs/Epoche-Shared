@@ -9,11 +9,13 @@ namespace Epoche.Shared.Json;
 /// </summary>
 public sealed class TransactionHashConverter : JsonConverter<string>
 {
-    public static readonly TransactionHashConverter Default = new(32, 32, false);
+    public static readonly TransactionHashConverter Default = new();
 
     readonly int MinLength;
     readonly int MaxLength;
     readonly bool AllowEmpty;
+
+    public TransactionHashConverter() : this(32, 32, false) { }
 
     /// <param name="allowEmpty">If true, the empty string is allowed, but not "0x"</param>
     public TransactionHashConverter(int minBytes, int maxBytes, bool allowEmpty)
@@ -31,7 +33,7 @@ public sealed class TransactionHashConverter : JsonConverter<string>
         }
         var hash = reader.GetString()!;
         if (AllowEmpty && hash.Length == 0) { return ""; }
-        if (hash.Length % 2 == 0)
+        if (hash.Length%2 == 0)
         {
             if (hash.StartsWith("0x"))
             {
@@ -44,7 +46,7 @@ public sealed class TransactionHashConverter : JsonConverter<string>
                     return hash.ToLower();
                 }
             }
-        }
+        }        
         throw new FormatException($"The value {hash} is not a valid transaction hash");
     }
 
