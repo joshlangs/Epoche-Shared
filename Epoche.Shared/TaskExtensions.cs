@@ -46,4 +46,28 @@ public static class TaskExtensions
         }
         task.AsTask().SwallowExceptions();
     }
+
+    public static Task WithCancellation(this Task task, CancellationToken cancellationToken) =>
+        task.IsCompleted || !cancellationToken.CanBeCanceled ? task :
+        cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
+        WithCancellationCore(task, cancellationToken);
+
+    static async Task WithCancellationCore(Task task, CancellationToken cancellationToken)
+    {
+        var tcs = new TaskCompletionSource();
+        using var reg = cancellationToken.Register(() => tcs.TrySetCanceled());
+        await await Task.WhenAny(tcs.Task, task);
+    }
+
+    public static Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken) =>
+        task.IsCompleted || !cancellationToken.CanBeCanceled ? task :
+        cancellationToken.IsCancellationRequested ? Task.FromCanceled<T>(cancellationToken) :
+        WithCancellationCore(task, cancellationToken);
+
+    static async Task<T> WithCancellationCore<T>(Task<T> task, CancellationToken cancellationToken)
+    {
+        var tcs = new TaskCompletionSource<T>();
+        using var reg = cancellationToken.Register(() => tcs.TrySetCanceled());
+        return await await Task.WhenAny(tcs.Task, task);
+    }
 }
