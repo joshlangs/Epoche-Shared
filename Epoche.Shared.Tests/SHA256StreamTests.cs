@@ -7,11 +7,11 @@ using Xunit;
 namespace Epoche.Shared;
 public class SHA256StreamTests
 {
-    static MemoryStream GetStream(int length) => new MemoryStream(RandomHelper.GetRandomBytes(length));
+    static MemoryStream GetStream(int length) => new(RandomHelper.GetRandomBytes(length));
 
     readonly SHA256 SHA256 = SHA256.Create();
     readonly MemoryStream MemoryStream = GetStream(1);
-    readonly SHA256Stream SHA256Stream = new SHA256Stream(GetStream(1));
+    readonly SHA256Stream SHA256Stream = new(GetStream(1));
 
     [Fact]
     [Trait("Type", "Unit")]
@@ -55,7 +55,7 @@ public class SHA256StreamTests
         using var s = GetStream(RandomHelper.GetRandomPositiveInt32() % 1000 + 1);
         var buf = new byte[s.Length];
         using var ss = new SHA256Stream(s);
-        while (await ss.ReadAsync(buf, 0, buf.Length) > 0) { }
+        while (await ss.ReadAsync(buf, 0, buf.Length, default) > 0) { }
         s.Position = 0;
         Assert.Equal(ss.SHA256Hash, SHA256.ComputeHash(s));
     }

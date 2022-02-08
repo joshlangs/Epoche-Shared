@@ -3,7 +3,7 @@
 namespace Epoche.Shared;
 public static class HashExtensions
 {
-    static readonly ThreadLocal<SHA256> SHA256s = new ThreadLocal<SHA256>(SHA256.Create);
+    static readonly ThreadLocal<SHA256> SHA256s = new(SHA256.Create);
 
     public static byte[] ComputeSHA256(this byte[] data) => ComputeSHA256((ReadOnlySpan<byte>)data.AsSpan());
     public static byte[] ComputeSHA256(this ArraySegment<byte> data) => ComputeSHA256((ReadOnlySpan<byte>)data.AsSpan());

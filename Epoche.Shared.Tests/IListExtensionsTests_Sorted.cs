@@ -6,13 +6,13 @@ using Xunit;
 namespace Epoche.Shared;
 public class IListExtensionsTests_Sorted
 {
-    readonly List<int> Items = new List<int>();
+    readonly List<int> Items = new();
 
-    readonly List<int> ItemsZero = new List<int>() { 0 };
-    readonly List<int> ItemsOne = new List<int>() { 1 };
+    readonly List<int> ItemsZero = new() { 0 };
+    readonly List<int> ItemsOne = new() { 1 };
     readonly List<int> TenEven = Enumerable.Range(0, 10).Select(x => x * 2).ToList();
 
-    readonly Random Random = new Random();
+    readonly Random Random = new();
 
     [Fact]
     [Trait("Type", "Unit")]

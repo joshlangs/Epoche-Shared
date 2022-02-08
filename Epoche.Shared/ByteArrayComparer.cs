@@ -1,7 +1,7 @@
 ﻿namespace Epoche.Shared;
 public sealed class ByteArrayComparer : IComparer<byte[]?>
 {
-    public static readonly ByteArrayComparer Instance = new ByteArrayComparer();
+    public static readonly ByteArrayComparer Instance = new();
     ByteArrayComparer() { }
 
     public int Compare(byte[]? x, byte[]? y)

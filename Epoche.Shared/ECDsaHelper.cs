@@ -52,7 +52,7 @@ public static class ECDsaHelper
             }
             catch (Exception e)
             {
-                throw new ArgumentOutOfRangeException(nameof(publicKey), e);
+                throw new ArgumentOutOfRangeException($"{nameof(publicKey)} seems to be invalid", e);
             }
         }
 

@@ -28,7 +28,7 @@ public static class TotpHelper
     {
         if (seed is null)
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(seed));
         }
 
         var tempArray = BitConverter.GetBytes(unixTimeSeconds / IntervalTimeInSeconds).ReverseArrayInPlace();        

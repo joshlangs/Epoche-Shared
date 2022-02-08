@@ -10,7 +10,7 @@ public sealed class ByteArrayEqualityComparer : IEqualityComparer<byte[]?>
     /// Suitable for 64 byte or shorter byte arrays.
     /// Longer arrays are vulnerable to hashcode collisions.
     /// </summary>
-    public static readonly ByteArrayEqualityComparer Instance = new ByteArrayEqualityComparer();
+    public static readonly ByteArrayEqualityComparer Instance = new();
     ByteArrayEqualityComparer()
     {
     }

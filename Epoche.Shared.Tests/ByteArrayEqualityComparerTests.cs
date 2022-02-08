@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Xunit;
 
 namespace Epoche.Shared;
@@ -10,7 +11,7 @@ public class ByteArrayEqualityComparerTests
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void GetHashCode_Empty_Returns0() => Assert.Equal(0, ByteArrayEqualityComparer.Instance.GetHashCode(new byte[0]));
+    public void GetHashCode_Empty_Returns0() => Assert.Equal(0, ByteArrayEqualityComparer.Instance.GetHashCode(Array.Empty<byte>()));
 
     [Fact]
     [Trait("Type", "Unit")]
