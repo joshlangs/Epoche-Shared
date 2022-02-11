@@ -7,7 +7,7 @@ public static class ConcurrentActionRunner
         if (maxConcurrency <= 0) { throw new ArgumentOutOfRangeException($"{nameof(maxConcurrency)}={maxConcurrency}. Must be positive."); }
         cancellationToken.ThrowIfCancellationRequested();
         var exceptions = new List<Exception>();
-        var semaphore = new SemaphoreSlim(maxConcurrency);
+        using var semaphore = new SemaphoreSlim(maxConcurrency);
         var tasks = new HashSet<Task>();
         Action<Task> release = t =>
         {
