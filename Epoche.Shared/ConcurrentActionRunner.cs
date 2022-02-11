@@ -29,7 +29,7 @@ public static class ConcurrentActionRunner
         {
             try
             {
-                await semaphore.WaitAsync(cancellationToken);
+                await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             }
             catch
             {
