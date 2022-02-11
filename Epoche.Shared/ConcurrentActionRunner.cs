@@ -58,12 +58,27 @@ public static class ConcurrentActionRunner
                 semaphore.Release();
             }
         }
-        List<Task> outstandingTasks;
-        lock (tasks)
+        bool first = true;
+        while (true)
         {
-            outstandingTasks = tasks.ToList();
+            // in case ExecuteSynchronously isn't honored, pump until all exceptions (if any) are collected
+            List<Task> outstandingTasks;
+            lock (tasks)
+            {
+                if (tasks.Count == 0) { break; }
+                outstandingTasks = tasks.ToList();
+            }
+            try
+            {
+                await Task.WhenAll(outstandingTasks).ConfigureAwait(false);
+            }
+            catch { }
+            if (!first)
+            {
+                await Task.Yield();
+            }
+            first = false;
         }
-        await Task.WhenAll(outstandingTasks).ConfigureAwait(false);
         if (stoppedEarly)
         {
             cancellationToken.ThrowIfCancellationRequested();
