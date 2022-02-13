@@ -8,13 +8,10 @@ public static class ConcurrentActionRunner
         cancellationToken.ThrowIfCancellationRequested();
         var exceptions = new List<Exception>();
         using var semaphore = new SemaphoreSlim(maxConcurrency);
-        var tasks = new HashSet<Task>();
+        var tasks = new ConcurrentSet<Task>();
         Action<Task> release = t =>
         {
-            lock (tasks)
-            {
-                tasks.Remove(t);
-            }
+            tasks.Remove(t);
             if (t.Exception is Exception e)
             {
                 lock (exceptions)
@@ -31,7 +28,7 @@ public static class ConcurrentActionRunner
             {
                 await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             }
-            catch
+            catch (OperationCanceledException)
             {
                 stoppedEarly = true;
                 break;
@@ -39,15 +36,12 @@ public static class ConcurrentActionRunner
             try
             {
                 var task = createTask(item);
+                tasks.Add(task);
+                _ = task.ContinueWith(release, TaskContinuationOptions.ExecuteSynchronously);
                 if (task.Status == TaskStatus.Created)
                 {
                     task.Start();
                 }
-                lock (tasks)
-                {
-                    tasks.Add(task);
-                }
-                _ = task.ContinueWith(release, TaskContinuationOptions.ExecuteSynchronously);
             }
             catch (Exception e)
             {
@@ -58,16 +52,13 @@ public static class ConcurrentActionRunner
                 semaphore.Release();
             }
         }
-        bool first = true;
+        var first = true;
         while (true)
         {
             // in case ExecuteSynchronously isn't honored, pump until all exceptions (if any) are collected
             List<Task> outstandingTasks;
-            lock (tasks)
-            {
-                if (tasks.Count == 0) { break; }
-                outstandingTasks = tasks.ToList();
-            }
+            if (tasks.IsEmpty) { break; }
+            outstandingTasks = tasks.ToList();
             try
             {
                 await Task.WhenAll(outstandingTasks).ConfigureAwait(false);
