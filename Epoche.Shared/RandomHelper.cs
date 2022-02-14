@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Epoche;
+namespace Epoche.Shared;
 
 public static class RandomHelper
 {
