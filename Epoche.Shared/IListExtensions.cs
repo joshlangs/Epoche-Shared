@@ -59,7 +59,7 @@ public static class IListExtensions
         return true;
     }
     /// <summary>
-    /// Returns true if an item was delete.  False if it was not found.
+    /// Returns true if an item was deleted.  False if it was not found.
     /// The list must already be in sorted order or else this will produce incorrect results.
     /// </summary>
     public static bool SortedDelete<T>(this IList<T> items, T item, IComparer<T> comparer)
