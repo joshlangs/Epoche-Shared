@@ -10,28 +10,28 @@ public class ObjectIdHelperTests
     readonly string Str2 = "a";
 
     [Fact]
-    public void Null_Same() => Assert.Equal(ObjectIdHelper.GetObjectId((object)null!), ObjectIdHelper.GetObjectId((object)null!));
+    public void Null_Same() => Assert.Equal(ObjectIdHelper.GetId((object)null!), ObjectIdHelper.GetId((object)null!));
 
     [Fact]
-    public void DifferentObjects_DifferentIds() => Assert.NotEqual(ObjectIdHelper.GetObjectId(Obj1), ObjectIdHelper.GetObjectId(Obj2));
+    public void DifferentObjects_DifferentIds() => Assert.NotEqual(ObjectIdHelper.GetId(Obj1), ObjectIdHelper.GetId(Obj2));
 
     [Fact]
     public void SameObjects_SameIds()
     {
-        Assert.Equal(ObjectIdHelper.GetObjectId(Obj1), ObjectIdHelper.GetObjectId(Obj1));
-        Assert.Equal(ObjectIdHelper.GetObjectId(Obj2), ObjectIdHelper.GetObjectId(Obj2));
+        Assert.Equal(ObjectIdHelper.GetId(Obj1), ObjectIdHelper.GetId(Obj1));
+        Assert.Equal(ObjectIdHelper.GetId(Obj2), ObjectIdHelper.GetId(Obj2));
     }
 
     [Fact]
     public void SameStrings_SameIds()
     {
-        Assert.Equal(ObjectIdHelper.GetObjectId(Str1), ObjectIdHelper.GetObjectId(Str1));
-        Assert.Equal(ObjectIdHelper.GetObjectId(Str2), ObjectIdHelper.GetObjectId(Str2));
+        Assert.Equal(ObjectIdHelper.GetId(Str1), ObjectIdHelper.GetId(Str1));
+        Assert.Equal(ObjectIdHelper.GetId(Str2), ObjectIdHelper.GetId(Str2));
     }
 
     [Fact]
-    public void DifferentStrings_DifferentIds() => Assert.NotEqual(ObjectIdHelper.GetObjectId(Str1), ObjectIdHelper.GetObjectId(Str2));
+    public void DifferentStrings_DifferentIds() => Assert.NotEqual(ObjectIdHelper.GetId(Str1), ObjectIdHelper.GetId(Str2));
 
     [Fact]
-    public void CastStringToObject_SameIds() => Assert.Equal(ObjectIdHelper.GetObjectId(Str1), ObjectIdHelper.GetObjectId((object)Str1));
+    public void CastStringToObject_SameIds() => Assert.Equal(ObjectIdHelper.GetId(Str1), ObjectIdHelper.GetId((object)Str1));
 }

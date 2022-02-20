@@ -15,5 +15,5 @@ public static class ObjectIdHelper
     /// <summary>
     /// Gets a stable and unique ID to an object
     /// </summary>
-    public static long GetObjectId<T>(T obj) where T : class => obj is null ? long.MinValue : Table.GetValue(obj, CreateObjectData).Id;
+    public static long GetId<T>(T obj) where T : class => obj is null ? long.MinValue : Table.GetValue(obj, CreateObjectData).Id;
 }

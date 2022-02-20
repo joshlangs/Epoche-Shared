@@ -50,7 +50,7 @@ public sealed class PropertyComparer<T, TProperty> : IComparer<T> where T : clas
         var cmp =
             x is IComparable<T> c ? c.CompareTo(y) :
             y is IComparable<T> c2 ? -c2.CompareTo(x) :
-            ObjectIdHelper.GetObjectId(x).CompareTo(ObjectIdHelper.GetObjectId(y));
+            ObjectIdHelper.GetId(x).CompareTo(ObjectIdHelper.GetId(y));
         return Ascending ? cmp : -cmp;
     }
 }
