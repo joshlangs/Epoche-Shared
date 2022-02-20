@@ -12,5 +12,8 @@ public static class ObjectIdHelper
         public readonly long Id = Interlocked.Increment(ref LastId);
     }
 
-    public static long GetObjectId(object obj) => obj is null ? long.MinValue : Table.GetValue(obj, CreateObjectData).Id;
+    /// <summary>
+    /// Gets a stable and unique ID to an object
+    /// </summary>
+    public static long GetObjectId<T>(T obj) where T : class => obj is null ? long.MinValue : Table.GetValue(obj, CreateObjectData).Id;
 }
