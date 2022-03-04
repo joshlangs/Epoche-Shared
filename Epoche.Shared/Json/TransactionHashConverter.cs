@@ -33,7 +33,7 @@ public sealed class TransactionHashConverter : JsonConverter<string>
         }
         var hash = reader.GetString()!;
         if (AllowEmpty && hash.Length == 0) { return ""; }
-        if (hash.Length%2 == 0)
+        if (hash.Length % 2 == 0)
         {
             if (hash.StartsWith("0x"))
             {
@@ -46,7 +46,7 @@ public sealed class TransactionHashConverter : JsonConverter<string>
                     return hash.ToLower();
                 }
             }
-        }        
+        }
         throw new FormatException($"The value {hash} is not a valid transaction hash");
     }
 
