@@ -58,4 +58,26 @@ public sealed class IsoDateTimeConverterTests
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
         Assert.Equal(obj?.A, test.A);
     }
+
+    [Fact]
+    public void Write_HandlesUnspecifiedKind()
+    {
+        var date = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
+        var test = new TestObj { A = date };
+        var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
+        Assert.Contains(date.ToString("O"), s);
+        var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
+        Assert.Equal(obj?.A, test.A);
+    }
+
+    [Fact]
+    public void Write_HandlesLocalKind()
+    {
+        var date = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var test = new TestObj { A = date.ToLocalTime() };
+        var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
+        Assert.Contains(date.ToString("O"), s);
+        var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
+        Assert.Equal(obj?.A, date);
+    }
 }

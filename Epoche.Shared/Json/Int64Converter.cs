@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Epoche.Shared.Json;
@@ -14,7 +15,7 @@ public sealed class Int64Converter : JsonConverter<long>
             throw new InvalidOperationException("Only string can be converted to long with this converter");
         }
 
-        if (long.TryParse(reader.GetString(), out var value))
+        if (long.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
         {
             return value;
         }
@@ -22,5 +23,5 @@ public sealed class Int64Converter : JsonConverter<long>
         throw new FormatException("The value could not be parsed into a long");
     }
 
-    public override void Write(Utf8JsonWriter writer, long value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString());
+    public override void Write(Utf8JsonWriter writer, long value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
 }

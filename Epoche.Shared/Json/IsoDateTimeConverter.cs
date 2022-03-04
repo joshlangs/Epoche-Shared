@@ -5,6 +5,8 @@ namespace Epoche.Shared.Json;
 
 /// <summary>
 /// Always outputs 7 digits of fractional seconds (ISO 8601).
+/// Always reads DateTime in UTC.
+/// Local DateTime are written after being converted to UTC.  Unspecified DateTime kinds are assumed to be UTC.
 /// But can read 0-7 fractional seconds (as per IsoDateCheater)
 /// https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#the-round-trip-o-o-format-specifier
 /// Note: Not as flexible as https://docs.microsoft.com/en-us/dotnet/standard/datetime/system-text-json-support#the-extended-iso-8601-12019-profile-in-systemtextjson which takes 8+ fractional seconds and potentially other formats.
@@ -30,11 +32,17 @@ public sealed class IsoDateTimeConverter : JsonConverter<DateTime>
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
-        if (value.Kind != DateTimeKind.Utc)
+        if (value.Kind == DateTimeKind.Utc)
         {
-            throw new InvalidOperationException($"Only UTC dates can be serialized with this converter");
+            writer.WriteStringValue(value.ToString("O"));
         }
-
-        writer.WriteStringValue(value.ToString("O"));
+        else if (value.Kind == DateTimeKind.Unspecified)
+        {
+            writer.WriteStringValue(new DateTime(value.Ticks, DateTimeKind.Utc).ToString("O"));
+        }
+        else
+        {
+            writer.WriteStringValue(value.ToUniversalTime().ToString("O"));
+        }
     }
 }
