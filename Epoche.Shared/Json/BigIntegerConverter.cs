@@ -15,8 +15,18 @@ public sealed class BigIntegerConverter : JsonConverter<BigInteger>
         {
             throw new InvalidOperationException("Only string can be converted to BigInteger with this converter");
         }
-
-        if (BigInteger.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+        if (!reader.HasValueSequence && reader.ValueSpan.Length < 1024)
+        {
+            Span<char> str = stackalloc char[reader.ValueSpan.Length];
+            if (reader.ValueSpan.TryToAsciiCharSpan(str))
+            {
+                if (BigInteger.TryParse(str, out var value))
+                {
+                    return value;
+                }
+            }
+        }
+        else if (BigInteger.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
         {
             return value;
         }
@@ -24,5 +34,16 @@ public sealed class BigIntegerConverter : JsonConverter<BigInteger>
         throw new FormatException("The value could not be parsed into a BigInteger");
     }
 
-    public override void Write(Utf8JsonWriter writer, BigInteger value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
+    public override void Write(Utf8JsonWriter writer, BigInteger value, JsonSerializerOptions options)
+    {
+        Span<char> buf = stackalloc char[100];
+        if (value.TryFormat(buf, out var written, provider: CultureInfo.InvariantCulture))
+        {
+            writer.WriteStringValue(buf[..written]);
+        }
+        else
+        {
+            writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
+        }
+    }
 }

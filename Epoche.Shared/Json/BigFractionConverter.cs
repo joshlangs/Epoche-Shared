@@ -13,12 +13,34 @@ public sealed class BigFractionConverter : JsonConverter<BigFraction>
         {
             throw new InvalidOperationException("Only string can be converted to BigFraction with this converter");
         }
-        if (BigFraction.TryParse(reader.GetString(), out var value))
+        if (!reader.HasValueSequence && reader.ValueSpan.Length < 1024)
+        {
+            Span<char> str = stackalloc char[reader.ValueSpan.Length];
+            if (reader.ValueSpan.TryToAsciiCharSpan(str))
+            {
+                if (BigFraction.TryParse(str, out var value))
+                {
+                    return value;
+                }
+            }
+        }
+        else if (BigFraction.TryParse(reader.GetString(), out var value))
         {
             return value;
         }
         throw new FormatException("The value could not be parsed into a BigFraction");
     }
 
-    public override void Write(Utf8JsonWriter writer, BigFraction value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString());
+    public override void Write(Utf8JsonWriter writer, BigFraction value, JsonSerializerOptions options)
+    {
+        Span<char> buf = stackalloc char[100];
+        if (value.TryToCharSpan(buf, out var written))
+        {
+            writer.WriteStringValue(buf[..written]);
+        }
+        else
+        {
+            writer.WriteStringValue(value.ToString());
+        }
+    }
 }

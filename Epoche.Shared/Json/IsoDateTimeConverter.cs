@@ -22,7 +22,19 @@ public sealed class IsoDateTimeConverter : JsonConverter<DateTime>
             throw new InvalidOperationException("Only string can be converted to DateTime with this converter");
         }
 
-        if (IsoDateCheater.TryParse(reader.GetString(), out var value))
+        DateTime value;
+        if (!reader.HasValueSequence)
+        {
+            Span<char> str = stackalloc char[reader.ValueSpan.Length];
+            if (reader.ValueSpan.TryToAsciiCharSpan(str))
+            {
+                if (IsoDateCheater.TryParse(str, out value))
+                {
+                    return value;
+                }
+            }
+        }
+        else if (IsoDateCheater.TryParse(reader.GetString(), out value))
         {
             return value;
         }
@@ -32,17 +44,22 @@ public sealed class IsoDateTimeConverter : JsonConverter<DateTime>
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
-        if (value.Kind == DateTimeKind.Utc)
+        Span<char> buf = stackalloc char[28];
+        if (value.Kind == DateTimeKind.Unspecified)
         {
-            writer.WriteStringValue(value.ToString("O"));
+            value = new DateTime(value.Ticks, DateTimeKind.Utc);
         }
-        else if (value.Kind == DateTimeKind.Unspecified)
+        else if (value.Kind == DateTimeKind.Local)
         {
-            writer.WriteStringValue(new DateTime(value.Ticks, DateTimeKind.Utc).ToString("O"));
+            value = value.ToUniversalTime();
+        }
+        if (value.TryFormat(buf, out var written, "O"))
+        {
+            writer.WriteStringValue(buf[..written]);
         }
         else
         {
-            writer.WriteStringValue(value.ToUniversalTime().ToString("O"));
+            writer.WriteStringValue(value.ToString("O"));
         }
     }
 }

@@ -18,11 +18,23 @@ public sealed class IPAddressConverter : JsonConverter<IPAddress>
         var str = reader.GetString();
         if (IPAddress.TryParse(str, out var value))
         {
-            // Make sure it's not just an integer
-            // https://docs.microsoft.com/en-us/dotnet/api/system.net.ipaddress.tryparse?view=net-6.0
-            if (value.AddressFamily == AddressFamily.InterNetworkV6 || str.Contains('.'))
+            if (value.AddressFamily != AddressFamily.InterNetwork)
             {
                 return value;
+            }
+            // Make sure it's a full IP address
+            // https://docs.microsoft.com/en-us/dotnet/api/system.net.ipaddress.tryparse?view=net-6.0
+            var dot = str.IndexOf('.', 1);
+            if (dot >= 1)
+            {
+                dot = str.IndexOf('.', dot + 2);
+                if (dot >= 1)
+                {
+                    if (str.IndexOf('.', dot + 2) >= 1)
+                    {
+                        return value;
+                    }
+                }
             }
         }
 

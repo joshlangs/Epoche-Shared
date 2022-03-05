@@ -39,8 +39,8 @@ public static class IsoDateCheater
 
     public static string[] GetFormats() => DecimalFormats.ToArray();
 
-    static bool TryParseExactUtc(string dateString, string format, out DateTime date)
-    {
+    static bool TryParseExactUtc(ReadOnlySpan<char> dateString, ReadOnlySpan<char> format, out DateTime date)
+    {        
         if (DateTime.TryParseExact(dateString, format, null, DateTimeStyles.RoundtripKind, out date))
         {
             date = new DateTime(date.Ticks, DateTimeKind.Utc);
@@ -49,9 +49,9 @@ public static class IsoDateCheater
         return false;
     }
 
-    public static bool TryParse(string? dateString, out DateTime date)
+    public static bool TryParse(ReadOnlySpan<char> dateString, out DateTime date)
     {
-        if (dateString?.Length > DecimalIndex &&
+        if (dateString.Length > DecimalIndex &&
             dateString[^1] == 'Z')
         {
             if (dateString[DecimalIndex] == 'Z')
@@ -71,5 +71,8 @@ public static class IsoDateCheater
         return false;
     }
 
-    public static DateTime Parse(string dateString) => TryParse(dateString, out var date) ? date : throw new FormatException($"Iso date should be in a format like {DecimalFormats.Last()}");
+    public static bool TryParse(string? dateString, out DateTime date) => TryParse((dateString ?? "").AsSpan(), out date);
+
+    public static DateTime Parse(string dateString) => TryParse(dateString, out var date) ? date : throw new FormatException($"Iso date should be in a format like {DecimalFormats[^1]}");
+    public static DateTime Parse(ReadOnlySpan<char> dateString) => TryParse(dateString, out var date) ? date : throw new FormatException($"Iso date should be in a format like {DecimalFormats[^1]}");
 }

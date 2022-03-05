@@ -7,15 +7,15 @@ public class IsoDateCheaterTests
 {
     static readonly string[] Formats = new[]
     {
-            "yyyy-MM-dd'T'HH:mm:ss'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.f'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.ff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.fff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.ffff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.fffff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'"
-        };
+        "yyyy-MM-dd'T'HH:mm:ss'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.f'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.ff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.fff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.ffff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.fffff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'"
+    };
 
     [Fact]
     [Trait("Type", "Unit")]
@@ -54,6 +54,19 @@ public class IsoDateCheaterTests
 
     [Fact]
     [Trait("Type", "Unit")]
+    public void TryParse_EachFormat_SpanResultsMatch()
+    {
+        for (var x = 0; x < Formats.Length; ++x)
+        {
+            var now = DateTime.UtcNow;
+            var nowString = now.ToString(Formats[x]);
+            Assert.True(IsoDateCheater.TryParse(nowString.AsSpan(), out var date));
+            Assert.Equal(nowString, date.ToString(Formats[x]));
+        }
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
     public void TryParse_Null_ReturnsFalse() => Assert.False(IsoDateCheater.TryParse(null, out _));
 
     [Fact]
@@ -74,6 +87,16 @@ public class IsoDateCheaterTests
     {
         var date = DateTime.UtcNow;
         var newDate = IsoDateCheater.Parse(date.ToString("O"));
+        Assert.Equal(newDate, date);
+        Assert.Equal(newDate.ToString("O"), date.ToString("O"));
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void Parse_ToString_SpanRoundtripWorks()
+    {
+        var date = DateTime.UtcNow;
+        var newDate = IsoDateCheater.Parse(date.ToString("O").AsSpan());
         Assert.Equal(newDate, date);
         Assert.Equal(newDate.ToString("O"), date.ToString("O"));
     }

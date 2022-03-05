@@ -41,6 +41,21 @@ public class IPAddressConverterTests
     public void Read_Int64String_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""123456""}", JsonSerializerOptions));
 
     [Fact]
+    public void Read_1DotString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""1.2""}", JsonSerializerOptions));
+
+    [Fact]
+    public void Read_2DotString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""1.2.3""}", JsonSerializerOptions));
+
+    [Fact]
+    public void Read_3DotEndingString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""1.2.3.""}", JsonSerializerOptions));
+
+    [Fact]
+    public void Read_3DotStartingString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":"".1.2.3""}", JsonSerializerOptions));
+
+    [Fact]
+    public void Read_3DotMiddleString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""1.2..3""}", JsonSerializerOptions));
+
+    [Fact]
     public void Read_NonString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":1}", JsonSerializerOptions));
 
     [Fact]

@@ -15,7 +15,18 @@ public sealed class UInt64Converter : JsonConverter<ulong>
             throw new InvalidOperationException("Only string can be converted to ulong with this converter");
         }
 
-        if (ulong.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+        if (!reader.HasValueSequence && reader.ValueSpan.Length < 1024)
+        {
+            Span<char> str = stackalloc char[reader.ValueSpan.Length];
+            if (reader.ValueSpan.TryToAsciiCharSpan(str))
+            {
+                if (ulong.TryParse(str, out var value))
+                {
+                    return value;
+                }
+            }
+        }
+        else if (ulong.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
         {
             return value;
         }
@@ -23,5 +34,16 @@ public sealed class UInt64Converter : JsonConverter<ulong>
         throw new FormatException("The value could not be parsed into a ulong");
     }
 
-    public override void Write(Utf8JsonWriter writer, ulong value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
+    public override void Write(Utf8JsonWriter writer, ulong value, JsonSerializerOptions options)
+    {
+        Span<char> buf = stackalloc char[22];
+        if (value.TryFormat(buf, out var written, provider: CultureInfo.InvariantCulture))
+        {
+            writer.WriteStringValue(buf[..written]);
+        }
+        else
+        {
+            writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
+        }
+    }
 }
