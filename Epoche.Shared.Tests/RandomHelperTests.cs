@@ -75,4 +75,23 @@ public class RandomHelperTests
         RandomHelper.GetRandomBytes(data.AsSpan());
         Assert.True(data.Distinct().Count() > 1);
     }
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void GetRandomLowerHex_Repeated_IsDifferent() => Assert.NotEqual(RandomHelper.GetRandomLowerHex(32), RandomHelper.GetRandomLowerHex(32));
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void GetRandomLowerHex_Length_Correct() => Assert.Equal(Enumerable.Range(0, 16).Select(x => RandomHelper.GetRandomLowerHex(x).Length), Enumerable.Range(0, 16));
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void GetRandomLowerHex_ReturnsHex()
+    {
+        for (var x = 0; x < 16; ++x)
+        {
+            var str = RandomHelper.GetRandomLowerHex(x);
+            Assert.True(str.All(x => (x >= '0' && x <= '9') || (x >= 'a' && x <= 'f')));
+        }
+    }
 }

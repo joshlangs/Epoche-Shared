@@ -1,10 +1,12 @@
-﻿using System.Security.Cryptography;
+﻿using System.Buffers;
+using System.Security.Cryptography;
 
 namespace Epoche.Shared;
 
 public static class RandomHelper
 {
     static readonly ThreadLocal<RandomNumberGenerator> Randoms = new(RandomNumberGenerator.Create);
+    static readonly char[] LowerHexChars = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
     public static byte[] GetRandomBytes(int count)
     {
@@ -64,5 +66,37 @@ public static class RandomHelper
             return num;
         }
         return GetRandomPositiveInt32();
+    }
+
+    public static string GetRandomLowerHex(int charCount)
+    {
+        if (charCount < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(charCount));
+        }
+        if (charCount == 0)
+        {
+            return "";
+        }
+        var byteLength = (charCount + 1) / 2;
+        var bytes = ArrayPool<byte>.Shared.Rent(byteLength);
+        Randoms.Value!.GetBytes(bytes.AsSpan(0, byteLength));
+        var str = string.Create(charCount, bytes, (chars, state) =>
+        {
+            var i = 0;
+            var lastByteIndex = chars.Length / 2;
+            for (var x = 0; x < lastByteIndex; ++x)
+            {
+                var b = bytes[x];
+                chars[i++] = LowerHexChars[b >> 4];
+                chars[i++] = LowerHexChars[b & 15];
+            }
+            if (i < chars.Length)
+            {
+                chars[i] = LowerHexChars[bytes[lastByteIndex] & 15];
+            }
+        });
+        ArrayPool<byte>.Shared.Return(bytes);
+        return str;
     }
 }

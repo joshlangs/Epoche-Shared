@@ -15,7 +15,7 @@
 		<PackageId>Epoche.Shared</PackageId>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/joshlang/Epoche-Shared</PackageProjectUrl>
-		<Version>1.0.20</Version>
+		<Version>1.0.21</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
