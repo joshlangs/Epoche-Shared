@@ -5,36 +5,25 @@ namespace Epoche.Shared;
 
 public static class RandomHelper
 {
-    static readonly ThreadLocal<RandomNumberGenerator> Randoms = new(RandomNumberGenerator.Create);
     static readonly char[] LowerHexChars = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-    public static byte[] GetRandomBytes(int count)
-    {
-        if (count < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count));
-        }
+    public static byte[] GetRandomBytes(int count) => RandomNumberGenerator.GetBytes(count);
 
-        var buf = new byte[count];
-        Randoms.Value!.GetBytes(buf.AsSpan());
-        return buf;
-    }
+    public static void GetRandomBytes(byte[] buf) => RandomNumberGenerator.Fill((Span<byte>)(buf ?? throw new ArgumentNullException(nameof(buf))));
 
-    public static void GetRandomBytes(byte[] buf) => GetRandomBytes((Span<byte>)(buf ?? throw new ArgumentNullException(nameof(buf))));
-
-    public static void GetRandomBytes(Span<byte> buf) => Randoms.Value!.GetBytes(buf);
+    public static void GetRandomBytes(Span<byte> buf) => RandomNumberGenerator.Fill(buf);
 
     public static long GetRandomInt64()
     {
         Span<byte> buf = stackalloc byte[8];
-        GetRandomBytes(buf);
+        RandomNumberGenerator.Fill(buf);
         return BitConverter.ToInt64(buf);
     }
 
     public static int GetRandomInt32()
     {
         Span<byte> buf = stackalloc byte[4];
-        GetRandomBytes(buf);
+        RandomNumberGenerator.Fill(buf);
         return BitConverter.ToInt32(buf);
     }
 
@@ -80,7 +69,7 @@ public static class RandomHelper
         }
         var byteLength = (charCount + 1) / 2;
         var bytes = ArrayPool<byte>.Shared.Rent(byteLength);
-        Randoms.Value!.GetBytes(bytes.AsSpan(0, byteLength));
+        RandomNumberGenerator.Fill(bytes.AsSpan(0, byteLength));
         var str = string.Create(charCount, bytes, (chars, state) =>
         {
             var i = 0;
