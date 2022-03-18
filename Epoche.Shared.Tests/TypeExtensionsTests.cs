@@ -16,6 +16,10 @@ public class TypeExtensionsTests
     {
     }
 
+    class GenericBase<T, U> { }
+    class Subclass1<T> : GenericBase<T, string> { }
+    class Subclass2 : Subclass1<int> { }
+
     [Fact]
     [Trait("Type", "Unit")]
     public void GetGenericInterfaces_TestObj_ReturnsBothInterfaces()
@@ -41,4 +45,28 @@ public class TypeExtensionsTests
     [Fact]
     [Trait("Type", "Unit")]
     public void GetGenericInterfaces_NonInterface_Throws() => Assert.Throws<InvalidOperationException>(() => typeof(TestObj).GetGenericInterfaces(typeof(object)));
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void IsSubclassOfOpenGeneric_NotGeneric_Works()
+    {
+        Assert.True(typeof(string).IsSubclassOfOpenGeneric(typeof(string)));
+        Assert.True(typeof(string).IsSubclassOfOpenGeneric(typeof(object)));
+        Assert.False(typeof(string).IsSubclassOfOpenGeneric(typeof(TestObj)));
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void IsSubclassOfOpenGeneric_TestCases()
+    {
+        Assert.True(typeof(Subclass2).IsSubclassOfOpenGeneric(typeof(GenericBase<,>)));
+        Assert.True(typeof(Subclass1<long>).IsSubclassOfOpenGeneric(typeof(GenericBase<,>)));
+        Assert.True(typeof(GenericBase<,>).IsSubclassOfOpenGeneric(typeof(GenericBase<,>)));
+        Assert.True(typeof(Subclass1<>).IsSubclassOfOpenGeneric(typeof(GenericBase<,>)));
+        Assert.True(typeof(Subclass2).IsSubclassOfOpenGeneric(typeof(GenericBase<,>)));
+        Assert.True(typeof(Subclass2).IsSubclassOfOpenGeneric(typeof(Subclass1<>)));
+        Assert.True(typeof(Subclass1<>).IsSubclassOfOpenGeneric(typeof(Subclass1<>)));
+        Assert.True(typeof(Subclass1<long>).IsSubclassOfOpenGeneric(typeof(Subclass1<>)));
+        Assert.False(typeof(Subclass1<>).IsSubclassOfOpenGeneric(typeof(Subclass1<long>)));
+    }
 }

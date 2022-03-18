@@ -12,4 +12,10 @@ public static class TypeExtensions
             .GetInterfaces()
             .Where(x => x.IsGenericType)
             .Where(x => x.GetGenericTypeDefinition() == genericInterfaceType);
+
+    public static bool IsSubclassOfOpenGeneric(this Type type, Type genericType) =>
+        type is null || genericType is null ? false :
+        type == genericType ? true :
+        type.IsGenericType && type.GetGenericTypeDefinition() == genericType ? true :
+        IsSubclassOfOpenGeneric(type.BaseType!, genericType);
 }
