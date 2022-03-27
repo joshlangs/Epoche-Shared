@@ -9,6 +9,17 @@ public sealed class GatedTaskRunner
     CancellationTokenSource? CancellationTokenSource;
     Task? OutstandingTask;
 
+    void ClearOutstandingTask(Task _)
+    {
+        lock (LockObject)
+        {
+            if (OutstandingTask?.IsCompleted == true)
+            {
+                OutstandingTask = null;
+            }
+        }
+    }
+
     /// <summary>
     /// Creates a new task, or returns an existing task if one is already in progress.
     /// </summary>
@@ -31,6 +42,7 @@ public sealed class GatedTaskRunner
             OutstandingTask = createTask(cts.Token);
             var withCancellation = OutstandingTask.WithCancellation(cancellationToken);
             withCancellation.ContinueWith(t => cts.Dispose(), TaskContinuationOptions.ExecuteSynchronously);
+            OutstandingTask.ContinueWith(ClearOutstandingTask);
             return withCancellation;
         }
     }
@@ -54,7 +66,9 @@ public sealed class GatedTaskRunner
                 return OutstandingTask.WithCancellation(cancellationToken);
             }
             OutstandingTask = createTask();
-            return OutstandingTask.WithCancellation(cancellationToken);
+            var withCancellation = OutstandingTask.WithCancellation(cancellationToken);
+            OutstandingTask.ContinueWith(ClearOutstandingTask);
+            return withCancellation;
         }
     }
 
@@ -82,6 +96,16 @@ public sealed class GatedTaskRunner<T>
     readonly object LockObject = new();
     CancellationTokenSource? CancellationTokenSource;
     Task<T>? OutstandingTask;
+    void ClearOutstandingTask(Task _)
+    {
+        lock (LockObject)
+        {
+            if (OutstandingTask?.IsCompleted == true)
+            {
+                OutstandingTask = null;
+            }
+        }
+    }
 
     /// <summary>
     /// Creates a new task, or returns an existing task if one is already in progress.
@@ -105,6 +129,7 @@ public sealed class GatedTaskRunner<T>
             OutstandingTask = createTask(cts.Token);
             var withCancellation = OutstandingTask.WithCancellation(cancellationToken);
             withCancellation.ContinueWith(t => cts.Dispose(), TaskContinuationOptions.ExecuteSynchronously);
+            OutstandingTask.ContinueWith(ClearOutstandingTask);
             return withCancellation;
         }
     }
@@ -128,7 +153,9 @@ public sealed class GatedTaskRunner<T>
                 return OutstandingTask.WithCancellation(cancellationToken);
             }
             OutstandingTask = createTask();
-            return OutstandingTask.WithCancellation(cancellationToken);
+            var withCancellation = OutstandingTask.WithCancellation(cancellationToken);
+            OutstandingTask.ContinueWith(ClearOutstandingTask);
+            return withCancellation;
         }
     }
 
