@@ -870,4 +870,40 @@ public class StringExtensionsTests
         ((ReadOnlySpan<byte>)str.Select(x => (byte)x).ToArray().AsSpan()).ToBytesFromHexUtf8(data);
         Assert.Equal(expected.Select(x => (char)x), data);
     }
+
+    [Fact]
+    public void Truncate_Negative_Throws() => Assert.Throws<ArgumentOutOfRangeException>(() => "abc".Truncate(-1));
+
+    [Theory]
+    [InlineData("", 0, "")]
+    [InlineData("", 1, "")]
+    [InlineData("a", 0, "")]
+    [InlineData("a", 1, "a")]
+    [InlineData("a", 2, "a")]
+    [InlineData("test", int.MaxValue, "test")]
+    [InlineData("test", 2, "te")]
+    public void Truncate_Length_TestCases(string input, int maxLength, string expected) => Assert.Equal(expected, input.Truncate(maxLength));
+
+    [Fact]
+    public void Truncate_WithStart_NegativeStart_Throws() => Assert.Throws<ArgumentOutOfRangeException>(() => "abc".Truncate(-1, 0));
+
+    [Fact]
+    public void Truncate_WithStart_NegativeLength_Throws() => Assert.Throws<ArgumentOutOfRangeException>(() => "abc".Truncate(0, -1));
+
+    [Fact]
+    public void Truncate_WithStart_StartingIndexTooHigh_Throws() => Assert.Throws<ArgumentOutOfRangeException>(() => "abc".Truncate(4, 0));
+
+    [Theory]
+    [InlineData("", 0, 0, "")]
+    [InlineData("", 0, 1, "")]
+    [InlineData("a", 0, 0, "")]
+    [InlineData("a", 0, 1, "a")]
+    [InlineData("a", 1, 0, "")]
+    [InlineData("a", 1, int.MaxValue, "")]
+    [InlineData("abc", 2, int.MaxValue, "c")]
+    [InlineData("abc", 0, 3, "abc")]
+    [InlineData("abc", 1, 1, "b")]
+    [InlineData("abc", 1, 2, "bc")]
+    [InlineData("abc", 1, 4, "bc")]
+    public void Truncate_WithStart_TestCases(string input, int startingIndex, int maxLength, string expected) => Assert.Equal(expected, input.Truncate(startingIndex, maxLength));
 }

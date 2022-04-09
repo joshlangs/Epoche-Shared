@@ -422,4 +422,15 @@ public static class StringExtensions
             throw new FormatException("Ran out of bytes before finishing ToBytesFromHexUtf8");
         }
     }
+
+    public static string Truncate(this string s, int maxLength) =>
+        maxLength < 0 ? throw new ArgumentOutOfRangeException(nameof(maxLength)) :
+        s.Length > maxLength ? s[..maxLength]
+        : s;
+    public static string Truncate(this string s, int startingIndex, int maxLength) =>
+        startingIndex < 0 || startingIndex > s.Length ? throw new ArgumentOutOfRangeException(nameof(startingIndex)) :
+        maxLength < 0 ? throw new ArgumentOutOfRangeException(nameof(maxLength)) :
+        (long)startingIndex + maxLength > int.MaxValue ? s[startingIndex..] :
+        startingIndex + maxLength < s.Length ? s.Substring(startingIndex, maxLength) :
+        s[startingIndex..];
 }
