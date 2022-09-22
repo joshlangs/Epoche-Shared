@@ -1,4 +1,6 @@
-﻿namespace Epoche.Shared;
+﻿using System.Numerics;
+
+namespace Epoche.Shared;
 
 public static class IEnumerableExtensions
 {
@@ -90,4 +92,18 @@ public static class IEnumerableExtensions
     /// This converts an IEnumerable[T] to a IEnumerable[T?]
     /// </summary>
     public static IEnumerable<T?> Nullable<T>(this IEnumerable<T> items) where T : notnull => items;
+
+    public static BigInteger SumBigInteger(this IEnumerable<BigInteger> items)
+    {
+        if (items is null)
+        {
+            throw new ArgumentNullException(nameof(items));
+        }
+        var total = BigInteger.Zero;
+        foreach (var item in items)
+        {
+            total += item;
+        }
+        return total;
+    }
 }

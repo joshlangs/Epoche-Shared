@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Xunit;
 
 namespace Epoche.Shared;
@@ -144,4 +145,33 @@ public class IEnumerableExtensionsTests
         var objs = new object?[] { new object(), null, new object(), null };
         Assert.Equal(objs.Where(x => x is not null), objs.ExcludeNull());
     }
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void SumBigInteger_Null_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((BigInteger[])null!).SumBigInteger());
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void SumBigInteger_Empty_0()
+    {
+        Assert.Equal(BigInteger.Zero, Array.Empty<BigInteger>().SumBigInteger());
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void SumBigInteger_One_4()
+    {
+        Assert.Equal((BigInteger)4, new BigInteger[] { 4 }.SumBigInteger());
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
+    public void SumBigInteger_Multi_Correct()
+    {
+        Assert.Equal((BigInteger)5, new BigInteger[] { 4, -6, 7 }.SumBigInteger());
+    }
+
 }
