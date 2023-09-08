@@ -55,7 +55,9 @@ public static class StringExtensions
     /// </summary>
     public static string ToLowerHex(this ReadOnlySpan<byte> data)
     {
-        Span<char> chars = stackalloc char[data.Length * 2];
+        Span<char> chars = data.Length > 65536 
+            ? new char[data.Length * 2]
+            : stackalloc char[data.Length * 2];
         var i = 0;
         for (var x = 0; x < data.Length; ++x)
         {
@@ -64,6 +66,7 @@ public static class StringExtensions
             chars[i++] = hex[1];
         }
         return new string(chars);
+
     }
 
     public static BigInteger? TryToBigInteger(this string s) => BigInteger.TryParse(s, out var val) ? (BigInteger?)val : null;
