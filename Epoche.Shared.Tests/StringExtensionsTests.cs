@@ -44,6 +44,15 @@ public class StringExtensionsTests
 
     [Fact]
     [Trait("Type", "Unit")]
+    public void ToLowerHex_LargeSpan_RoundTrips()
+    {
+        var data = RandomHelper.GetRandomBytes(1000000);
+        var str = data.AsSpan().ToLowerHex();
+        Assert.Equal(str.ToHexBytes(), data);
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
     public void ToLowerHex_RandomBytes_ReturnHexString()
     {
         var buf = RandomHelper.GetRandomBytes(32);

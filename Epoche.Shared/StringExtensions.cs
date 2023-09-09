@@ -55,17 +55,36 @@ public static class StringExtensions
     /// </summary>
     public static string ToLowerHex(this ReadOnlySpan<byte> data)
     {
-        Span<char> chars = data.Length > 65536 
-            ? new char[data.Length * 2]
-            : stackalloc char[data.Length * 2];
-        var i = 0;
-        for (var x = 0; x < data.Length; ++x)
+        if (data.Length > 65536)
         {
-            var hex = LowerHexBytes[data[x]];
-            chars[i++] = hex[0];
-            chars[i++] = hex[1];
+            var buf = ArrayPool<byte>.Shared.Rent(data.Length);
+            data.CopyTo(buf);
+            var s = string.Create(data.Length * 2, buf, (chars, state) =>
+            {
+                var i = 0;
+                var end = chars.Length / 2;
+                for (var x = 0; x < end; ++x)
+                {
+                    var hex = LowerHexBytes[state[x]];
+                    chars[i++] = hex[0];
+                    chars[i++] = hex[1];
+                }
+            });
+            ArrayPool<byte>.Shared.Return(buf);
+            return s;
         }
-        return new string(chars);
+        else
+        {
+            Span<char> chars = stackalloc char[data.Length * 2];
+            var i = 0;
+            for (var x = 0; x < data.Length; ++x)
+            {
+                var hex = LowerHexBytes[data[x]];
+                chars[i++] = hex[0];
+                chars[i++] = hex[1];
+            }
+            return new string(chars);
+        }
 
     }
 
