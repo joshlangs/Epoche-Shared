@@ -61,6 +61,14 @@ public class StringExtensionsTests
 
     [Fact]
     [Trait("Type", "Unit")]
+    public void ToLowerHex_RandomBytesMemory_ReturnHexString()
+    {
+        var buf = RandomHelper.GetRandomBytes(32);
+        Assert.Equal(buf.AsMemory().ToLowerHex(), string.Concat(buf.Select(x => x.ToString("x2"))));
+    }
+
+    [Fact]
+    [Trait("Type", "Unit")]
     public void ToLowerHex_RandomBytesSpan_ReturnHexString()
     {
         var buf = RandomHelper.GetRandomBytes(32);

@@ -46,6 +46,29 @@ public static class StringExtensions
     }
 
     /// <summary>
+    /// Converts bytes to lower case hex characters. String length always a multiple of 2.
+    /// </summary>
+    public static string ToLowerHex(this Memory<byte> data) => ((ReadOnlyMemory<byte>)data).ToLowerHex();
+
+    /// <summary>
+    /// Converts bytes to lower case hex characters. String length always a multiple of 2.
+    /// </summary>
+    public static string ToLowerHex(this ReadOnlyMemory<byte> data)
+    {
+        return string.Create(data.Length * 2, data, (chars, state) =>
+        {
+            var i = 0;
+            var span = state.Span;
+            for (var x = 0; x < state.Length; ++x)
+            {
+                var hex = LowerHexBytes[span[x]];
+                chars[i++] = hex[0];
+                chars[i++] = hex[1];
+            }
+        });
+    }
+
+    /// <summary>
     /// Converts a byte array to lower case hex characters. String length always a multiple of 2.
     /// </summary>
     public static string ToLowerHex(this Span<byte> data) => ToLowerHex((ReadOnlySpan<byte>)data);
