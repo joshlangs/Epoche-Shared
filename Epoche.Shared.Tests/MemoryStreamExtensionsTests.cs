@@ -18,7 +18,7 @@ public class MemoryStreamExtensionsTests
     public void GetDataBuffer_NonwritableStream_ReturnsSameBytes()
     {
         var bytes = RandomHelper.GetRandomBytes(RandomHelper.GetRandomPositiveInt32() % 1000 + 1);
-        Assert.Equal(bytes, new MemoryStream(bytes, false).GetDataBuffer());
+        Assert.Equal(bytes, new MemoryStream(bytes, false).GetDataBuffer().AsSpan());
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class MemoryStreamExtensionsTests
         var bytes = RandomHelper.GetRandomBytes(RandomHelper.GetRandomPositiveInt32() % 1000 + 1);
         var ms = new MemoryStream();
         ms.Write(bytes);
-        Assert.Equal(bytes, ms.GetDataBuffer());
+        Assert.Equal(bytes, ms.GetDataBuffer().AsSpan());
     }
 
     [Fact]

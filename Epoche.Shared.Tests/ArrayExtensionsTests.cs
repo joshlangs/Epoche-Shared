@@ -20,7 +20,8 @@ public class ArrayExtensionsTests
     {
         var b = RandomHelper.GetRandomBytes(32);
         var b2 = b.ToArray();
-        Assert.Equal(b.ReverseArrayInPlace(), b2.Reverse().ToArray());
+        b2.Reverse();
+        Assert.Equal(b.ReverseArrayInPlace(), b2);
     }
 
     [Fact]
