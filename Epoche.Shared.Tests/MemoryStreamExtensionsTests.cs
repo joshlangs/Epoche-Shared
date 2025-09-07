@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace Epoche.Shared;
@@ -11,7 +12,7 @@ public class MemoryStreamExtensionsTests
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void GetDataBuffer_Empty_ReturnsEmpty() => Assert.Empty(new MemoryStream().GetDataBuffer());
+    public void GetDataBuffer_Empty_ReturnsEmpty() => Assert.Empty(new MemoryStream().GetDataBuffer().ToList());
 
     [Fact]
     [Trait("Type", "Unit")]

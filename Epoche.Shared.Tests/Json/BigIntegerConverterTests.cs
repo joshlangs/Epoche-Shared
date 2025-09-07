@@ -33,13 +33,25 @@ public class BigIntegerConverterTests
     [Fact]
     public void Read_NonString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":1}", JsonSerializerOptions));
 
-    [Fact]
-    public void Write_Roundtrips()
+    void RoundTrips(BigInteger value)
     {
-        var test = new TestObj { A = 123 };
+        var test = new TestObj { A = value };
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
-        Assert.Contains(@"""123""", s);
+        Assert.Contains($@"""{value}""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
         Assert.Equal(obj?.A, test.A);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(1)]
+    [InlineData(1234)]
+    [InlineData(-1234)]
+    public void Write_Roundtrips(BigInteger value)
+    {
+        RoundTrips(value);
+        RoundTrips(value * 1000000000000000L);
+        RoundTrips(value * 1234987612349875L);
     }
 }

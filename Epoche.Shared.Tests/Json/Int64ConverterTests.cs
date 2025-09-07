@@ -32,12 +32,19 @@ public class Int64ConverterTests
     [Fact]
     public void Read_NonString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":1}", JsonSerializerOptions));
 
-    [Fact]
-    public void Write_Roundtrips()
+    [Theory]
+    [InlineData(long.MinValue)]
+    [InlineData(long.MaxValue)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(1)]
+    [InlineData(1234)]
+    [InlineData(-1234)]
+    public void Write_Roundtrips(long value)
     {
-        var test = new TestObj { A = -123 };
+        var test = new TestObj { A = value };
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
-        Assert.Contains(@"""-123""", s);
+        Assert.Contains($@"""{value}""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
         Assert.Equal(obj?.A, test.A);
     }

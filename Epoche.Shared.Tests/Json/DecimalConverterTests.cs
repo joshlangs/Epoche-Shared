@@ -32,13 +32,35 @@ public class DecimalConverterTests
     [Fact]
     public void Read_NonString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":1}", JsonSerializerOptions));
 
-    [Fact]
-    public void Write_Roundtrips()
+    void RoundTrips(decimal value)
     {
-        var test = new TestObj { A = -1.23m };
+        var test = new TestObj { A = value };
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
-        Assert.Contains(@"""-1.23""", s);
+        Assert.Contains($@"""{value}""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
         Assert.Equal(obj?.A, test.A);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(1)]
+    [InlineData(1234)]
+    [InlineData(-1234)]
+    public void Write_Roundtrips(decimal value)
+    {
+        RoundTrips(value);
+        RoundTrips(value / 10);
+        RoundTrips(value / 100);
+        RoundTrips(value / 10000);
+        RoundTrips(value / 17);
+        RoundTrips(value * 17.34567m);
+    }
+
+    [Fact]
+    public void Write_MinMax()
+    {
+        RoundTrips(decimal.MinValue);
+        RoundTrips(decimal.MaxValue);
     }
 }
