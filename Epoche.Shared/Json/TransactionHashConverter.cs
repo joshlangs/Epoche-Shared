@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Epoche.Shared.Json;
 
 /// <summary>
-/// This will read strings as lowercase hex characters, stripping leading '0x' and ensuring the length is as expected.
+/// This will read strings as lowercase hex characters, stripping leading '0x' and ensuring the length is as expected (by default, exactly 32 bytes / 64 characters).
 /// When serializing, strings are written as-is and without validation.
 /// </summary>
 public sealed class TransactionHashConverter : JsonConverter<string>
@@ -41,7 +41,7 @@ public sealed class TransactionHashConverter : JsonConverter<string>
             }
             if (hash.Length >= MinLength && hash.Length <= MaxLength)
             {
-                if (hash.TryToHexBytes() is not null)
+                if (hash.IsHexBytes())
                 {
                     return hash.ToLower();
                 }

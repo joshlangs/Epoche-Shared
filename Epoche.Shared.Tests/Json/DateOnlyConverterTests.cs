@@ -23,14 +23,25 @@ public class DateOnlyConverterTests
         Assert.Equal(new DateOnly(1234, 12, 10), obj?.A);
     }
 
-    [Fact]
-    public void Read_EmptyString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""""}", JsonSerializerOptions));
-
-    [Fact]
-    public void Read_InvalidString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""a""}", JsonSerializerOptions));
-
-    [Fact]
-    public void Read_NonString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":1}", JsonSerializerOptions));
+    [Theory]
+    [InlineData("\"\"")]
+    [InlineData("4")]
+    [InlineData("null")]
+    [InlineData("[]")]
+    [InlineData("{}")]
+    [InlineData("123-45-678")]
+    [InlineData("2025-13-01")]
+    [InlineData("2025-00-01")]
+    [InlineData("2025-12-00")]
+    [InlineData("2025-12-32")]
+    [InlineData("2025-02-30")]
+    [InlineData("-123-02-05")]
+    [InlineData("2025--2-30")]
+    [InlineData("2025-02--3")]
+    [InlineData("2025-02-15\0")]
+    [InlineData("2025-02-15 ")]
+    [InlineData(" 2025-02-15")]
+    public void Read_Invalid_Throws(string value) => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>($@"{{""A"":{value}}}", JsonSerializerOptions));
 
     [Fact]
     public void Write_Roundtrips()

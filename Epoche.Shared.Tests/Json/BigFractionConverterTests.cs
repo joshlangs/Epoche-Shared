@@ -24,14 +24,20 @@ public class BigFractionConverterTests
         Assert.Equal(BigFraction.Parse("1.23"), obj?.A);
     }
 
-    [Fact]
-    public void Read_EmptyString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""""}", JsonSerializerOptions));
-
-    [Fact]
-    public void Read_InvalidString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":""a""}", JsonSerializerOptions));
-
-    [Fact]
-    public void Read_NonString_Throws() => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>(@"{""A"":1}", JsonSerializerOptions));
+    [Theory]
+    [InlineData("\"\"")]
+    [InlineData("1")]
+    [InlineData("null")]
+    [InlineData("[]")]
+    [InlineData("{}")]
+    [InlineData("\"+1\"")]
+    [InlineData("\" 1\"")]
+    [InlineData("\"1 \"")]
+    [InlineData("\"$1\"")]
+    [InlineData("\"1,234\"")]
+    [InlineData("\"1e3\"")]
+    [InlineData("\"1\0\"")]
+    public void Read_Invalid_Throws(string value) => Assert.ThrowsAny<Exception>(() => JsonSerializer.Deserialize<TestObj>($@"{{""A"":{value}}}", JsonSerializerOptions));
 
     void RoundTrips(BigFraction value)
     {

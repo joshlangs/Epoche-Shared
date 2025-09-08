@@ -12,25 +12,29 @@ public sealed class Int128Converter : JsonConverter<Int128>
     {
         if (reader.TokenType != JsonTokenType.String)
         {
-            throw new InvalidOperationException("Only string can be converted to long with this converter");
+            throw new InvalidOperationException("Only string can be converted to Int128 with this converter");
         }
 
         if (!reader.HasValueSequence && reader.ValueSpan.Length < 1024)
         {
             Span<char> str = stackalloc char[reader.ValueSpan.Length];
-            if (reader.ValueSpan.TryToAsciiCharSpan(str))
+            if (reader.ValueSpan.TryToAsciiCharSpan(str) && str.Length > 0 && str[0] != '+')
             {
-                if (Int128.TryParse(str, out var value))
+                if (Int128.TryParse(str, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
                 {
                     return value;
                 }
             }
         }
-        else if (Int128.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+        else
         {
-            return value;
+            var str = reader.GetString() ?? "";
+            if (str.Length > 0 && str[0] != '+' && str[^1] != '\0' && Int128.TryParse(str, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+            {
+                return value;
+            }
         }
-        
+
         throw new FormatException("The value could not be parsed into a long");
     }
 

@@ -53,20 +53,17 @@ public static class StringExtensions
     /// <summary>
     /// Converts bytes to lower case hex characters. String length always a multiple of 2.
     /// </summary>
-    public static string ToLowerHex(this ReadOnlyMemory<byte> data)
-    {
-        return string.Create(data.Length * 2, data, (chars, state) =>
-        {
-            var i = 0;
-            var span = state.Span;
-            for (var x = 0; x < state.Length; ++x)
-            {
-                var hex = LowerHexBytes[span[x]];
-                chars[i++] = hex[0];
-                chars[i++] = hex[1];
-            }
-        });
-    }
+    public static string ToLowerHex(this ReadOnlyMemory<byte> data) => string.Create(data.Length * 2, data, (chars, state) =>
+                                                                            {
+                                                                                var i = 0;
+                                                                                var span = state.Span;
+                                                                                for (var x = 0; x < state.Length; ++x)
+                                                                                {
+                                                                                    var hex = LowerHexBytes[span[x]];
+                                                                                    chars[i++] = hex[0];
+                                                                                    chars[i++] = hex[1];
+                                                                                }
+                                                                            });
 
     /// <summary>
     /// Converts a byte array to lower case hex characters. String length always a multiple of 2.
@@ -185,6 +182,28 @@ public static class StringExtensions
 
             destination[x] = (byte)((val1 << 4) | val2);
         }
+    }
+
+    /// <summary>
+    /// Test if a string of characters are hex and can be converted into a byte array.
+    /// Returns true if the string is empty (it would be converted into a zero length byte array).
+    /// </summary>
+    public static bool IsHexBytes(this string? data)
+    {
+        if (data is null || data.Length % 2 != 0)
+        {
+            return false;
+        }
+        for (var x = 0; x < data.Length; ++x)
+        {
+            var c = data[x];
+            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))
+            {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
     /// <summary>

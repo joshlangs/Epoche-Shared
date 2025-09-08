@@ -20,15 +20,19 @@ public sealed class UInt64Converter : JsonConverter<ulong>
             Span<char> str = stackalloc char[reader.ValueSpan.Length];
             if (reader.ValueSpan.TryToAsciiCharSpan(str))
             {
-                if (ulong.TryParse(str, out var value))
+                if (ulong.TryParse(str, NumberStyles.None, CultureInfo.InvariantCulture, out var value))
                 {
                     return value;
                 }
             }
         }
-        else if (ulong.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+        else
         {
-            return value;
+            var str = reader.GetString() ?? "";
+            if (str.Length > 0 && str[^1] != '\0' && ulong.TryParse(str, NumberStyles.None, CultureInfo.InvariantCulture, out var value))
+            {
+                return value;
+            }
         }
 
         throw new FormatException("The value could not be parsed into a ulong");

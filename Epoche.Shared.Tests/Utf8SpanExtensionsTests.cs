@@ -75,6 +75,20 @@ public class Utf8SpanExtensionsTests
     [InlineData(".-0")]
     [InlineData("0a2")]
     [InlineData("0.A")]
+    [InlineData("-1")]
+    public void TryParseUtf8PositiveInt32_Invalid_False(string orig)
+    {
+        var buf = StringToBytes(orig);
+        Assert.False(buf.TryParseUtf8PositiveInt32(out _));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("-")]
+    [InlineData(".")]
+    [InlineData(".-0")]
+    [InlineData("0a2")]
+    [InlineData("0.A")]
     public void TryParseUtf8Int64_Invalid_False(string orig)
     {
         var buf = StringToBytes(orig);
@@ -88,6 +102,21 @@ public class Utf8SpanExtensionsTests
     [InlineData(".-0")]
     [InlineData("0a2")]
     [InlineData("0.A")]
+    [InlineData("-1")]
+    public void TryParseUtf8PositiveInt64_Invalid_False(string orig)
+    {
+        var buf = StringToBytes(orig);
+        Assert.False(buf.TryParseUtf8PositiveInt64(out _));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("-")]
+    [InlineData(".")]
+    [InlineData(".-0")]
+    [InlineData("0a2")]
+    [InlineData("0.A")]
+    [InlineData("-1")]
     public void TryParseUtf8UInt32_Invalid_False(string orig)
     {
         var buf = StringToBytes(orig);
@@ -101,6 +130,7 @@ public class Utf8SpanExtensionsTests
     [InlineData(".-0")]
     [InlineData("0a2")]
     [InlineData("0.A")]
+    [InlineData("-1")]
     public void TryParseUtf8UInt64_Invalid_False(string orig)
     {
         var buf = StringToBytes(orig);
@@ -120,6 +150,18 @@ public class Utf8SpanExtensionsTests
     }
 
     [Fact]
+    public void TryParseUtf8PositiveInt32_Valid_True()
+    {
+        for (var x = 0; x < 100; ++x)
+        {
+            var num = RandomHelper.GetRandomPositiveInt32();
+            var buf = StringToBytes(num.ToString());
+            Assert.True(buf.TryParseUtf8PositiveInt32(out var num2));
+            Assert.Equal(num, num2);
+        }
+    }
+
+    [Fact]
     public void TryParseUtf8Int64_Valid_True()
     {
         for (var x = 0; x < 100; ++x)
@@ -127,6 +169,18 @@ public class Utf8SpanExtensionsTests
             var num = RandomHelper.GetRandomInt64();
             var buf = StringToBytes(num.ToString());
             Assert.True(buf.TryParseUtf8Int64(out var num2));
+            Assert.Equal(num, num2);
+        }
+    }
+
+    [Fact]
+    public void TryParseUtf8PositiveInt64_Valid_True()
+    {
+        for (var x = 0; x < 100; ++x)
+        {
+            var num = RandomHelper.GetRandomPositiveInt64();
+            var buf = StringToBytes(num.ToString());
+            Assert.True(buf.TryParseUtf8PositiveInt64(out var num2));
             Assert.Equal(num, num2);
         }
     }

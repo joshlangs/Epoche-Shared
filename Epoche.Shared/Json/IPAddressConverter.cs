@@ -12,7 +12,7 @@ public sealed class IPAddressConverter : JsonConverter<IPAddress>
     {
         if (reader.TokenType != JsonTokenType.String)
         {
-            throw new InvalidOperationException("Only string can be converted to DateTime with this converter");
+            throw new InvalidOperationException("Only string can be converted to IPAddress with this converter");
         }
 
         var str = reader.GetString();

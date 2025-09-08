@@ -24,9 +24,9 @@ public sealed class DateOnlyConverter : JsonConverter<DateOnly>
                 s[4] == '-' &&
                 s[7] == '-')
             {
-                if (s[..4].TryParseUtf8Int32(out var year) &&
-                    s[5..7].TryParseUtf8Int32(out var month) &&
-                    s[8..].TryParseUtf8Int32(out var day))
+                if (s[..4].TryParseUtf8PositiveInt32(out var year) &&
+                    s[5..7].TryParseUtf8PositiveInt32(out var month) &&
+                    s[8..].TryParseUtf8PositiveInt32(out var day))
                 {
                     return new DateOnly(year, month, day);
                 }
@@ -51,17 +51,19 @@ public sealed class DateOnlyConverter : JsonConverter<DateOnly>
 
     public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
     {
-        Span<byte> buf = stackalloc byte[10];
-        buf[0] = (byte)((value.Year / 1000) + '0');
-        buf[1] = (byte)(((value.Year % 1000) / 100) + '0');
-        buf[2] = (byte)(((value.Year % 100) / 10) + '0');
-        buf[3] = (byte)((value.Year % 10) + '0');
-        buf[4] = (byte)'-';
-        buf[5] = (byte)(value.Month > 9 ? '1' : '0');
-        buf[6] = (byte)((value.Month % 10) + '0');
-        buf[7] = (byte)'-';
-        buf[8] = (byte)((value.Day / 10) + '0');
-        buf[9] = (byte)((value.Day % 10) + '0');
+        Span<byte> buf =
+        [
+            (byte)((value.Year / 1000) + '0'),
+            (byte)(((value.Year % 1000) / 100) + '0'),
+            (byte)(((value.Year % 100) / 10) + '0'),
+            (byte)((value.Year % 10) + '0'),
+            (byte)'-',
+            (byte)(value.Month > 9 ? '1' : '0'),
+            (byte)((value.Month % 10) + '0'),
+            (byte)'-',
+            (byte)((value.Day / 10) + '0'),
+            (byte)((value.Day % 10) + '0'),
+        ];
         writer.WriteStringValue(buf);
     }
 }

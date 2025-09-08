@@ -17,17 +17,21 @@ public sealed class DecimalConverter : JsonConverter<decimal>
         if (!reader.HasValueSequence && reader.ValueSpan.Length < 1024)
         {
             Span<char> str = stackalloc char[reader.ValueSpan.Length];
-            if (reader.ValueSpan.TryToAsciiCharSpan(str))
+            if (reader.ValueSpan.TryToAsciiCharSpan(str) && str.Length > 0 && str[0] != '+')
             {
-                if (decimal.TryParse(str, out var value))
+                if (decimal.TryParse(str, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
                 {
                     return value;
                 }
             }
         }
-        else if (decimal.TryParse(reader.GetString(), NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+        else
         {
-            return value;
+            var str = reader.GetString() ?? "";
+            if (str.Length > 0 && str[0] != '+' && str[^1] != '\0' && decimal.TryParse(str, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+            {
+                return value;
+            }
         }
 
         throw new FormatException("The value could not be parsed into a decimal");

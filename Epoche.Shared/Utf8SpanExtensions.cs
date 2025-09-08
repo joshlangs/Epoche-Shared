@@ -36,6 +36,18 @@ public static class Utf8SpanExtensions
         Span<char> chars = stackalloc char[utf8.Length];
         return TryToAsciiCharSpan(utf8, chars) && long.TryParse(chars, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value);
     }
+    public static bool TryParseUtf8PositiveInt32(this ReadOnlySpan<byte> utf8, out int value)
+    {
+        value = 0;
+        Span<char> chars = stackalloc char[utf8.Length];
+        return TryToAsciiCharSpan(utf8, chars) && int.TryParse(chars, NumberStyles.None, CultureInfo.InvariantCulture, out value);
+    }
+    public static bool TryParseUtf8PositiveInt64(this ReadOnlySpan<byte> utf8, out long value)
+    {
+        value = 0;
+        Span<char> chars = stackalloc char[utf8.Length];
+        return TryToAsciiCharSpan(utf8, chars) && long.TryParse(chars, NumberStyles.None, CultureInfo.InvariantCulture, out value);
+    }
     public static bool TryParseUtf8UInt32(this ReadOnlySpan<byte> utf8, out uint value)
     {
         value = 0;

@@ -18,17 +18,21 @@ public sealed class BigIntegerConverter : JsonConverter<BigInteger>
         if (!reader.HasValueSequence && reader.ValueSpan.Length < 1024)
         {
             Span<char> str = stackalloc char[reader.ValueSpan.Length];
-            if (reader.ValueSpan.TryToAsciiCharSpan(str))
+            if (reader.ValueSpan.TryToAsciiCharSpan(str) && str.Length > 0 && str[0] != '+')
             {
-                if (BigInteger.TryParse(str, out var value))
+                if (BigInteger.TryParse(str, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
                 {
                     return value;
                 }
             }
         }
-        else if (BigInteger.TryParse(reader.GetString(), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+        else
         {
-            return value;
+            var str = reader.GetString() ?? "";
+            if (str.Length > 0 && str[0] != '+' && str[^1] != '\0' && BigInteger.TryParse(str, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var value))
+            {
+                return value;
+            }
         }
 
         throw new FormatException("The value could not be parsed into a BigInteger");

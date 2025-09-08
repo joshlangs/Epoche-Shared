@@ -923,4 +923,20 @@ public class StringExtensionsTests
     [InlineData("abc", 1, 2, "bc")]
     [InlineData("abc", 1, 4, "bc")]
     public void Truncate_WithStart_TestCases(string input, int startingIndex, int maxLength, string expected) => Assert.Equal(expected, input.Truncate(startingIndex, maxLength));
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("12")]
+    [InlineData("ab1234")]
+    [InlineData("abcdef1234567890")]
+    [InlineData("AB1234")]
+    [InlineData("abcdef1234567890ABCDEF")]
+    public void IsHexBytes_Valid_ReturnsTrue(string value) => Assert.True(value.IsHexBytes());
+
+    [Theory]
+    [InlineData("1")]
+    [InlineData("123")]
+    [InlineData("gb1234")]
+    [InlineData("aGcdef1234567890")]
+    public void IsHexBytes_Invalid_ReturnsFalse(string value) => Assert.False(value.IsHexBytes());
 }
