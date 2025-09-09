@@ -20,7 +20,7 @@ public class Int128ConverterTests
     public void Read_String_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""123""}", JsonSerializerOptions);
-        Assert.Equal(123, obj?.A);
+        Assert.Equal(123, obj!.A);
     }
 
     [Theory]
@@ -45,7 +45,7 @@ public class Int128ConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains($@"""{value}""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 
     [Theory]

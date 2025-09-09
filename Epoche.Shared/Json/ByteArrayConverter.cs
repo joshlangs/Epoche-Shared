@@ -19,7 +19,7 @@ public sealed class ByteArrayConverter : JsonConverter<byte[]>
             var hexSequence = reader.ValueSequence;
             if (hexSequence.Length == 0)
             {
-                return Array.Empty<byte>();
+                return [];
             }
             var data = new byte[hexSequence.Length / 2];
             hexSequence.ToBytesFromHexUtf8(data);
@@ -30,7 +30,7 @@ public sealed class ByteArrayConverter : JsonConverter<byte[]>
             var hexSpan = reader.ValueSpan;
             if (hexSpan.Length == 0)
             {
-                return Array.Empty<byte>();
+                return [];
             }
             var data = new byte[hexSpan.Length / 2];
             hexSpan.ToBytesFromHexUtf8(data);

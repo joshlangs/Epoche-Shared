@@ -11,10 +11,7 @@ public static class IEnumerableExtensions
     /// </summary>
     public static IEnumerable<IEnumerable<T>> Segment<T>(this IEnumerable<T>? items, int maxItemsPerSegment)
     {
-        if (maxItemsPerSegment <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxItemsPerSegment));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxItemsPerSegment);
         if (items is null)
         {
             yield break;
@@ -53,10 +50,8 @@ public static class IEnumerableExtensions
         const int MaxFirstPreallocation = 1024;
         const int MaxPreallocation = 1024 * 1024;
 
-        if (maxItemsPerSegment <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxItemsPerSegment));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxItemsPerSegment);
+
         if (items is null)
         {
             yield break;
@@ -80,7 +75,7 @@ public static class IEnumerableExtensions
     /// <summary>
     /// This can safely be called on an IEnumerable[T] which is null, and it will convert it into Enumerable.Empty[T]() if it's null.
     /// </summary>
-    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? items) => items ?? Enumerable.Empty<T>();
+    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? items) => items ?? [];
 
     /// <summary>
     /// Excludes all null elements and returns an enumeration of non-nullable items.
@@ -95,10 +90,7 @@ public static class IEnumerableExtensions
 
     public static BigInteger SumBigInteger(this IEnumerable<BigInteger> items)
     {
-        if (items is null)
-        {
-            throw new ArgumentNullException(nameof(items));
-        }
+        ArgumentNullException.ThrowIfNull(items);
         var total = BigInteger.Zero;
         foreach (var item in items)
         {

@@ -5,7 +5,7 @@
 /// </summary>
 public sealed class GatedTaskRunner
 {
-    readonly object LockObject = new();
+    readonly Lock LockObject = new();
     CancellationTokenSource? CancellationTokenSource;
     Task? OutstandingTask;
 
@@ -93,7 +93,7 @@ public sealed class GatedTaskRunner
 /// </summary>
 public sealed class GatedTaskRunner<T>
 {
-    readonly object LockObject = new();
+    readonly Lock LockObject = new();
     CancellationTokenSource? CancellationTokenSource;
     Task<T>? OutstandingTask;
     void ClearOutstandingTask(Task _)

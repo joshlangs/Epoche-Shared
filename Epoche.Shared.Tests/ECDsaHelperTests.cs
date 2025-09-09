@@ -18,7 +18,7 @@ public class ECDsaHelperTests
         Assert.Equal(p.Q.X!, p.Q.X!);
         Assert.Equal(p.Q.Y!, p.Q.Y!);
 
-        ecp = ECDsaHelper.CreatePrivateECParameters(p.D!.Concat(p.Q.X!).Concat(p.Q.Y!).ToArray(), true);
+        ecp = ECDsaHelper.CreatePrivateECParameters([.. p.D!, .. p.Q.X!, .. p.Q.Y!], true);
         Assert.Equal(p.D!, ecp.D);
         Assert.Equal(p.Q.X!, p.Q.X!);
         Assert.Equal(p.Q.Y!, p.Q.Y!);
@@ -31,12 +31,12 @@ public class ECDsaHelperTests
         var e = ECDsa.Create(ECCurve.NamedCurves.nistP256);
         var p = e.ExportParameters(true);
 
-        var ecp = ECDsaHelper.CreatePrivateECParameters(p.D!.AsSpan(), p.Q.X!.Concat(p.Q.Y!).ToArray().AsSpan(), true);
+        var ecp = ECDsaHelper.CreatePrivateECParameters(p.D!.AsSpan(), [.. p.Q.X!, .. p.Q.Y!], true);
         Assert.Equal(p.D!, ecp.D);
         Assert.Equal(p.Q.X!, p.Q.X!);
         Assert.Equal(p.Q.Y!, p.Q.Y!);
 
-        ecp = ECDsaHelper.CreatePrivateECParameters(p.D!.Concat(p.Q.X!).Concat(p.Q.Y!).ToArray().AsSpan(), true);
+        ecp = ECDsaHelper.CreatePrivateECParameters([.. p.D!, .. p.Q.X!, .. p.Q.Y!], true);
         Assert.Equal(p.D!, ecp.D);
         Assert.Equal(p.Q.X!, p.Q.X!);
         Assert.Equal(p.Q.Y!, p.Q.Y!);
@@ -52,7 +52,7 @@ public class ECDsaHelperTests
         var d = p.D!.ToArray();
         d[0]++;
         Assert.ThrowsAny<Exception>(() => ECDsaHelper.CreatePrivateECParameters(d, p.Q.X!.Concat(p.Q.Y!).ToArray(), true));
-        Assert.ThrowsAny<Exception>(() => ECDsaHelper.CreatePrivateECParameters(d.Concat(p.Q.X!).Concat(p.Q.Y!).ToArray(), true));
+        Assert.ThrowsAny<Exception>(() => ECDsaHelper.CreatePrivateECParameters([.. d, .. p.Q.X!, .. p.Q.Y!], true));
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class ECDsaHelperTests
 
         var d = p.D!.ToArray();
         d[0]++;
-        Assert.ThrowsAny<Exception>(() => ECDsaHelper.CreatePrivateECParameters(d.AsSpan(), p.Q.X!.Concat(p.Q.Y!).ToArray().AsSpan(), true));
-        Assert.ThrowsAny<Exception>(() => ECDsaHelper.CreatePrivateECParameters(d.Concat(p.Q.X!).Concat(p.Q.Y!).ToArray().AsSpan(), true));
+        Assert.ThrowsAny<Exception>(() => ECDsaHelper.CreatePrivateECParameters(d.AsSpan(), [.. p.Q.X!, .. p.Q.Y!], true));
+        Assert.ThrowsAny<Exception>(() => ECDsaHelper.CreatePrivateECParameters([.. d, .. p.Q.X!, .. p.Q.Y!], true));
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class ECDsaHelperTests
         var d = p.D!.ToArray();
         d[0]++;
         ECDsaHelper.CreatePrivateECParameters(d, p.Q.X!.Concat(p.Q.Y!).ToArray(), false);
-        ECDsaHelper.CreatePrivateECParameters(d.Concat(p.Q.X!).Concat(p.Q.Y!).ToArray(), false);
+        ECDsaHelper.CreatePrivateECParameters([.. d, .. p.Q.X!, .. p.Q.Y!], false);
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public class ECDsaHelperTests
 
         var d = p.D!.ToArray();
         d[0]++;
-        ECDsaHelper.CreatePrivateECParameters(d.AsSpan(), p.Q.X!.Concat(p.Q.Y!).ToArray().AsSpan(), false);
-        ECDsaHelper.CreatePrivateECParameters(d.Concat(p.Q.X!).Concat(p.Q.Y!).ToArray().AsSpan(), false);
+        ECDsaHelper.CreatePrivateECParameters(d.AsSpan(), [.. p.Q.X!, .. p.Q.Y!], false);
+        ECDsaHelper.CreatePrivateECParameters([.. d, .. p.Q.X!, .. p.Q.Y!], false);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class ECDsaHelperTests
         var e = ECDsa.Create(ECCurve.NamedCurves.nistP256);
         var p = e.ExportParameters(true);
 
-        var ecp = ECDsaHelper.CreatePublicECParameters(p.Q.X!.Concat(p.Q.Y!).ToArray());
+        var ecp = ECDsaHelper.CreatePublicECParameters([.. p.Q.X!, .. p.Q.Y!]);
         Assert.Equal(ecp.Q.X!, p.Q.X!);
         Assert.Equal(ecp.Q.Y!, p.Q.Y!);
         Assert.Null(ecp.D);
@@ -114,7 +114,7 @@ public class ECDsaHelperTests
         var e = ECDsa.Create(ECCurve.NamedCurves.nistP256);
         var p = e.ExportParameters(true);
 
-        var ecp = ECDsaHelper.CreatePublicECParameters(p.Q.X!.Concat(p.Q.Y!).ToArray().AsSpan());
+        var ecp = ECDsaHelper.CreatePublicECParameters([.. p.Q.X!, .. p.Q.Y!]);
         Assert.Equal(ecp.Q.X!, p.Q.X!);
         Assert.Equal(ecp.Q.Y!, p.Q.Y!);
         Assert.Null(ecp.D);

@@ -6,7 +6,8 @@ public static class ArrayExtensions
     /// </summary>
     public static byte[] ReverseArrayInPlace(this byte[] array)
     {
-        Array.Reverse(array ?? throw new ArgumentNullException(nameof(array)));
+        ArgumentNullException.ThrowIfNull(array);
+        Array.Reverse(array);
         return array;
     }
 
@@ -15,14 +16,8 @@ public static class ArrayExtensions
     /// </summary>
     public static byte[] ConcatArray(this byte[] array, byte[] other)
     {
-        if (array is null)
-        {
-            throw new ArgumentNullException(nameof(array));
-        }
-        if (other is null)
-        {
-            throw new ArgumentNullException(nameof(other));
-        }
+        ArgumentNullException.ThrowIfNull(array);
+        ArgumentNullException.ThrowIfNull(other);
 
         var buf = new byte[array.Length + other.Length];
         Array.Copy(array, 0, buf, 0, array.Length);

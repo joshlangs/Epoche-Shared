@@ -15,10 +15,10 @@ public class Utf8SpanExtensionsTests
     }
 
     [Fact]
-    public void TryToAsciiCharSpan_Empty_True() => Assert.True(((ReadOnlySpan<byte>)Array.Empty<byte>().AsSpan()).TryToAsciiCharSpan(Array.Empty<char>()));
+    public void TryToAsciiCharSpan_Empty_True() => Assert.True(((ReadOnlySpan<byte>)[]).TryToAsciiCharSpan([]));
 
     [Fact]
-    public void TryToAsciiCharSpan_TooShort_False() => Assert.False(((ReadOnlySpan<byte>)new byte[1].AsSpan()).TryToAsciiCharSpan(Array.Empty<char>()));
+    public void TryToAsciiCharSpan_TooShort_False() => Assert.False(((ReadOnlySpan<byte>)new byte[1].AsSpan()).TryToAsciiCharSpan([]));
 
     [Fact]
     public void TryToAsciiCharSpan_32_126_True()

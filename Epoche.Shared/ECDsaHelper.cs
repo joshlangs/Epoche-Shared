@@ -3,27 +3,28 @@
 namespace Epoche.Shared;
 public static class ECDsaHelper
 {
-    public static ECParameters CreatePrivateECParameters(byte[] combinedKey, bool validateKey = true) =>
-        combinedKey is null
-        ? throw new ArgumentNullException(nameof(combinedKey))
-        : CreatePrivateECParameters((ReadOnlySpan<byte>)combinedKey, validateKey);
+    public static ECParameters CreatePrivateECParameters(byte[] combinedKey, bool validateKey = true)
+    {
+        ArgumentNullException.ThrowIfNull(combinedKey);
+        return CreatePrivateECParameters((ReadOnlySpan<byte>)combinedKey, validateKey);
+    }
 
     public static ECParameters CreatePrivateECParameters(ReadOnlySpan<byte> combinedKey, bool validateKey = true)
     {
         if (combinedKey.Length != 96)
         {
-            throw new ArgumentNullException(nameof(combinedKey));
+            throw new ArgumentOutOfRangeException(nameof(combinedKey));
         }
 
         return CreatePrivateECParameters(combinedKey[..32], combinedKey[32..], validateKey);
     }
 
-    public static ECParameters CreatePrivateECParameters(byte[] privateKey, byte[] publicKey, bool validateKey = true) =>
-        privateKey is null
-        ? throw new ArgumentNullException(nameof(privateKey))
-        : publicKey is null
-        ? throw new ArgumentNullException(nameof(publicKey))
-        : CreatePrivateECParameters((ReadOnlySpan<byte>)privateKey, (ReadOnlySpan<byte>)publicKey, validateKey);
+    public static ECParameters CreatePrivateECParameters(byte[] privateKey, byte[] publicKey, bool validateKey = true)
+    {
+        ArgumentNullException.ThrowIfNull(privateKey);
+        ArgumentNullException.ThrowIfNull(publicKey);
+        return CreatePrivateECParameters((ReadOnlySpan<byte>)privateKey, (ReadOnlySpan<byte>)publicKey, validateKey);
+    }
 
     public static ECParameters CreatePrivateECParameters(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> publicKey, bool validateKey = true)
     {
@@ -59,10 +60,11 @@ public static class ECDsaHelper
         return p;
     }
 
-    public static ECParameters CreatePublicECParameters(byte[] publicKey) =>
-        publicKey is null
-        ? throw new ArgumentNullException(nameof(publicKey))
-        : CreatePublicECParameters((ReadOnlySpan<byte>)publicKey);
+    public static ECParameters CreatePublicECParameters(byte[] publicKey)
+    {
+        ArgumentNullException.ThrowIfNull(publicKey);
+        return CreatePublicECParameters((ReadOnlySpan<byte>)publicKey);
+    }
 
     public static ECParameters CreatePublicECParameters(ReadOnlySpan<byte> publicKey)
     {
@@ -75,10 +77,10 @@ public static class ECDsaHelper
         {
             Curve = ECCurve.NamedCurves.nistP256,
             Q =
-                {
-                    X = publicKey[..32].ToArray(),
-                    Y = publicKey[32..].ToArray()
-                }
+            {
+                X = publicKey[..32].ToArray(),
+                Y = publicKey[32..].ToArray()
+            }
         };
         p.Validate();
         return p;

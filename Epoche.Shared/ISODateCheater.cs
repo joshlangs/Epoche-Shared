@@ -19,8 +19,8 @@ public static class IsoDateCheater
     /// </summary>
     public static readonly DateTime MaxValue = new(DateTime.MaxValue.Ticks, DateTimeKind.Utc);
 
-    static readonly string[] DecimalFormats = new[]
-    {
+    static readonly string[] DecimalFormats =
+    [
         "yyyy-MM-dd'T'HH:mm:ss'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.f'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.ff'Z'",
@@ -29,15 +29,17 @@ public static class IsoDateCheater
         "yyyy-MM-dd'T'HH:mm:ss.fffff'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
-    };
+    ];
     const int DecimalIndex = 19;
 
-    public static string GetFormat(int decimalCount) =>
-        decimalCount < 0 || decimalCount >= DecimalFormats.Length
-        ? throw new ArgumentOutOfRangeException(nameof(decimalCount), $"0-{DecimalFormats.Length - 1} only")
-        : DecimalFormats[decimalCount];
+    public static string GetFormat(int decimalCount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(decimalCount);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(decimalCount, DecimalFormats.Length);
+        return DecimalFormats[decimalCount];
+    }
 
-    public static string[] GetFormats() => DecimalFormats.ToArray();
+    public static string[] GetFormats() => [.. DecimalFormats];
 
     static bool TryParseExactUtc(ReadOnlySpan<char> dateString, ReadOnlySpan<char> format, out DateTime date)
     {        

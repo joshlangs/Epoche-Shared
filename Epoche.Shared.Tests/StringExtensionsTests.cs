@@ -139,14 +139,14 @@ public class StringExtensionsTests
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void ToHexBytes_OddLengthString_ThrowsArgumentOutOfRangeException() => Assert.Throws<ArgumentOutOfRangeException>(() => "123".ToHexBytes());
+    public void ToHexBytes_OddLengthString_ThrowsFormatException() => Assert.Throws<FormatException>(() => "123".ToHexBytes());
 
     [Theory]
     [InlineData("z1")]
     [InlineData("1z")]
     [InlineData(" 0")]
     [Trait("Type", "Unit")]
-    public void ToHexBytes_BadString_ThrowsArgumentOutOfRangeException(string str) => Assert.Throws<ArgumentOutOfRangeException>(() => str.ToHexBytes());
+    public void ToHexBytes_BadString_ThrowsFormatException(string str) => Assert.Throws<FormatException>(() => str.ToHexBytes());
 
     [Fact]
     [Trait("Type", "Unit")]
@@ -154,7 +154,7 @@ public class StringExtensionsTests
     {
         for (var x = 0; x < 256; ++x)
         {
-            Assert.Equal(new byte[] { (byte)x }, x.ToString("x2").ToHexBytes());
+            Assert.Equal([(byte)x], x.ToString("x2").ToHexBytes());
         }
     }
 
@@ -179,13 +179,13 @@ public class StringExtensionsTests
     {
         for (var x = 0; x < 256; ++x)
         {
-            Assert.Equal(new byte[] { (byte)x }, x.ToString("x2").TryToHexBytes());
+            Assert.Equal([(byte)x], x.ToString("x2").TryToHexBytes()!);
         }
     }
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void ToHexBytes_SpanNull_ThrowsArgumentNullException() => Assert.Throws<ArgumentNullException>(() => ((string)null!).ToHexBytes(Array.Empty<byte>()));
+    public void ToHexBytes_SpanNull_ThrowsArgumentNullException() => Assert.Throws<ArgumentNullException>(() => ((string)null!).ToHexBytes([]));
 
     [Fact]
     [Trait("Type", "Unit")]
@@ -234,7 +234,7 @@ public class StringExtensionsTests
         {
             var target = new byte[2];
             new byte[] { (byte)x }.AsSpan().ToLowerHexUtf8(target.AsSpan());
-            Assert.Equal(new string(target.Select(x => (char)x).ToArray()), x.ToString("x2"));
+            Assert.Equal(new string([.. target.Select(x => (char)x)]), x.ToString("x2"));
         }
     }
     [Fact]
@@ -244,8 +244,8 @@ public class StringExtensionsTests
         for (var x = 0; x < 256; ++x)
         {
             var target = new byte[2];
-            ((ReadOnlySpan<byte>)new byte[] { (byte)x }.AsSpan()).ToLowerHexUtf8(target.AsSpan());
-            Assert.Equal(new string(target.Select(x => (char)x).ToArray()), x.ToString("x2"));
+            ((ReadOnlySpan<byte>)[(byte)x]).ToLowerHexUtf8(target.AsSpan());
+            Assert.Equal(new string([.. target.Select(x => (char)x)]), x.ToString("x2"));
         }
     }
 
@@ -268,7 +268,7 @@ public class StringExtensionsTests
         for (var x = 0; x < 256; ++x)
         {
             var target = new char[2];
-            ((ReadOnlySpan<byte>)new byte[] { (byte)x }.AsSpan()).ToLowerHexUtf8(target.AsSpan());
+            ((ReadOnlySpan<byte>)[(byte)x]).ToLowerHexUtf8(target.AsSpan());
             Assert.Equal(new string(target), x.ToString("x2"));
         }
     }
@@ -317,7 +317,7 @@ public class StringExtensionsTests
         var data = RandomHelper.GetRandomBytes(RandomHelper.GetRandomPositiveInt32() % 1024);
         var buf = new byte[data.Length * 2];
         data.AsSpan().ToLowerHexUtf8(buf);
-        Assert.Equal(new string(buf.Select(x => (char)x).ToArray()), data.ToLowerHex());
+        Assert.Equal(new string([.. buf.Select(x => (char)x)]), data.ToLowerHex());
     }
 
     [Fact]
@@ -444,11 +444,11 @@ public class StringExtensionsTests
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void ToBytesFromHexUtf8_ZeroBytesReadOnlySpan_DoesntThrow() => ((ReadOnlySpan<byte>)Array.Empty<byte>().AsSpan()).ToBytesFromHexUtf8(Array.Empty<byte>());
+    public void ToBytesFromHexUtf8_ZeroBytesReadOnlySpan_DoesntThrow() => ((ReadOnlySpan<byte>)[]).ToBytesFromHexUtf8(Array.Empty<byte>());
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void ToBytesFromHexUtf8_ZeroCharsReadOnlySpan_DoesntThrow() => ((ReadOnlySpan<byte>)Array.Empty<byte>().AsSpan()).ToBytesFromHexUtf8(Array.Empty<char>());
+    public void ToBytesFromHexUtf8_ZeroCharsReadOnlySpan_DoesntThrow() => ((ReadOnlySpan<byte>)[]).ToBytesFromHexUtf8(Array.Empty<char>());
 
     [Theory]
     [InlineData(0, 1)]
@@ -550,9 +550,9 @@ public class StringExtensionsTests
                 continue;
             }
 
-            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)new byte[] { (byte)0, (byte)x }.AsSpan()).ToBytesFromHexUtf8(new byte[1]));
-            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)new byte[] { (byte)x, (byte)x }.AsSpan()).ToBytesFromHexUtf8(new byte[1]));
-            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)new byte[] { (byte)x, (byte)0 }.AsSpan()).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)[(byte)0, (byte)x]).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)[(byte)x, (byte)x]).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)[(byte)x, (byte)0]).ToBytesFromHexUtf8(new byte[1]));
         }
     }
 
@@ -600,18 +600,18 @@ public class StringExtensionsTests
                 continue;
             }
 
-            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)new byte[] { (byte)0, (byte)x }.AsSpan()).ToBytesFromHexUtf8(new char[1]));
-            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)new byte[] { (byte)x, (byte)x }.AsSpan()).ToBytesFromHexUtf8(new char[1]));
-            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)new byte[] { (byte)x, (byte)0 }.AsSpan()).ToBytesFromHexUtf8(new char[1]));
+            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)[(byte)0, (byte)x]).ToBytesFromHexUtf8(new char[1]));
+            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)[(byte)x, (byte)x]).ToBytesFromHexUtf8(new char[1]));
+            Assert.Throws<FormatException>(() => ((ReadOnlySpan<byte>)[(byte)x, (byte)0]).ToBytesFromHexUtf8(new char[1]));
         }
     }
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void ToBytesFromHexUtf8_EmptyBytesSequence_DoesntThrow() => ReadOnlySequence<byte>.Empty.ToBytesFromHexUtf8(Array.Empty<byte>());
+    public void ToBytesFromHexUtf8_EmptyBytesSequence_DoesntThrow() => ReadOnlySequence<byte>.Empty.ToBytesFromHexUtf8([]);
     [Fact]
     [Trait("Type", "Unit")]
-    public void ToBytesFromHexUtf8_EmptyCharsSequence_DoesntThrow() => ReadOnlySequence<char>.Empty.ToBytesFromHexUtf8(Array.Empty<byte>());
+    public void ToBytesFromHexUtf8_EmptyCharsSequence_DoesntThrow() => ReadOnlySequence<char>.Empty.ToBytesFromHexUtf8([]);
 
     [Fact]
     [Trait("Type", "Unit")]
@@ -620,7 +620,7 @@ public class StringExtensionsTests
         for (var x = 0; x < 256; ++x)
         {
             var target = new byte[1];
-            new ReadOnlySequence<byte>(new[] { (byte)x }.ToLowerHex().Select(x => (byte)x).ToArray()).ToBytesFromHexUtf8(target);
+            new ReadOnlySequence<byte>([.. new[] { (byte)x }.ToLowerHex().Select(x => (byte)x)]).ToBytesFromHexUtf8(target);
             Assert.Equal(target[0], x);
         }
     }
@@ -632,7 +632,7 @@ public class StringExtensionsTests
         for (var x = 0; x < 256; ++x)
         {
             var target = new byte[1];
-            new ReadOnlySequence<char>(new[] { (byte)x }.ToLowerHex().ToArray()).ToBytesFromHexUtf8(target);
+            new ReadOnlySequence<char>([.. new[] { (byte)x }.ToLowerHex()]).ToBytesFromHexUtf8(target);
             Assert.Equal(target[0], x);
         }
     }
@@ -644,7 +644,7 @@ public class StringExtensionsTests
         for (var x = 0; x < 256; ++x)
         {
             var target = new byte[1];
-            new ReadOnlySequence<byte>(new[] { (byte)x }.ToLowerHex().ToUpper().Select(x => (byte)x).ToArray()).ToBytesFromHexUtf8(target);
+            new ReadOnlySequence<byte>([.. new[] { (byte)x }.ToLowerHex().ToUpper().Select(x => (byte)x)]).ToBytesFromHexUtf8(target);
             Assert.Equal(target[0], x);
         }
     }
@@ -656,14 +656,14 @@ public class StringExtensionsTests
         for (var x = 0; x < 256; ++x)
         {
             var target = new byte[1];
-            new ReadOnlySequence<char>(new[] { (byte)x }.ToLowerHex().ToUpper().ToArray()).ToBytesFromHexUtf8(target);
+            new ReadOnlySequence<char>([.. new[] { (byte)x }.ToLowerHex().ToUpper()]).ToBytesFromHexUtf8(target);
             Assert.Equal(target[0], x);
         }
     }
 
     class ByteSeq : ReadOnlySequenceSegment<byte>
     {
-        public ByteSeq(ByteSeq prev, byte data) : this(prev, new[] { data }) { }
+        public ByteSeq(ByteSeq prev, byte data) : this(prev, [data]) { }
         public ByteSeq(ByteSeq prev, byte[] data)
         {
             if (prev is not null)
@@ -676,7 +676,7 @@ public class StringExtensionsTests
     }
     class CharSeq : ReadOnlySequenceSegment<char>
     {
-        public CharSeq(CharSeq prev, char data) : this(prev, new[] { data }) { }
+        public CharSeq(CharSeq prev, char data) : this(prev, [data]) { }
         public CharSeq(CharSeq prev, char[] data)
         {
             if (prev is not null)
@@ -739,9 +739,9 @@ public class StringExtensionsTests
                 continue;
             }
 
-            Assert.Throws<FormatException>(() => new ReadOnlySequence<byte>(new byte[] { (byte)0, (byte)x }).ToBytesFromHexUtf8(new byte[1]));
-            Assert.Throws<FormatException>(() => new ReadOnlySequence<byte>(new byte[] { (byte)x, (byte)x }).ToBytesFromHexUtf8(new byte[1]));
-            Assert.Throws<FormatException>(() => new ReadOnlySequence<byte>(new byte[] { (byte)x, (byte)0 }).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => new ReadOnlySequence<byte>([(byte)0, (byte)x]).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => new ReadOnlySequence<byte>([(byte)x, (byte)x]).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => new ReadOnlySequence<byte>([(byte)x, (byte)0]).ToBytesFromHexUtf8(new byte[1]));
         }
     }
 
@@ -764,9 +764,9 @@ public class StringExtensionsTests
                 continue;
             }
 
-            Assert.Throws<FormatException>(() => new ReadOnlySequence<char>(new byte[] { (byte)0, (byte)x }.Select(x => (char)x).ToArray()).ToBytesFromHexUtf8(new byte[1]));
-            Assert.Throws<FormatException>(() => new ReadOnlySequence<char>(new byte[] { (byte)x, (byte)x }.Select(x => (char)x).ToArray()).ToBytesFromHexUtf8(new byte[1]));
-            Assert.Throws<FormatException>(() => new ReadOnlySequence<char>(new byte[] { (byte)x, (byte)0 }.Select(x => (char)x).ToArray()).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => new ReadOnlySequence<char>([.. new byte[] { (byte)0, (byte)x }.Select(x => (char)x)]).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => new ReadOnlySequence<char>([.. new byte[] { (byte)x, (byte)x }.Select(x => (char)x)]).ToBytesFromHexUtf8(new byte[1]));
+            Assert.Throws<FormatException>(() => new ReadOnlySequence<char>([.. new byte[] { (byte)x, (byte)0 }.Select(x => (char)x)]).ToBytesFromHexUtf8(new byte[1]));
         }
     }
 
@@ -776,7 +776,7 @@ public class StringExtensionsTests
     {
         var hexstr = RandomHelper.GetRandomBytes(RandomHelper.GetRandomPositiveInt32() % 1024).ToLowerHex();
         var buf = new byte[hexstr.Length / 2];
-        new ReadOnlySequence<byte>(hexstr.Select(x => (byte)x).ToArray()).ToBytesFromHexUtf8(buf);
+        new ReadOnlySequence<byte>([.. hexstr.Select(x => (byte)x)]).ToBytesFromHexUtf8(buf);
         Assert.Equal(buf, hexstr.ToHexBytes());
     }
 
@@ -786,7 +786,7 @@ public class StringExtensionsTests
     {
         var hexstr = RandomHelper.GetRandomBytes(RandomHelper.GetRandomPositiveInt32() % 1024).ToLowerHex();
         var buf = new byte[hexstr.Length / 2];
-        new ReadOnlySequence<char>(hexstr.ToArray()).ToBytesFromHexUtf8(buf);
+        new ReadOnlySequence<char>([.. hexstr]).ToBytesFromHexUtf8(buf);
         Assert.Equal(buf, hexstr.ToHexBytes());
     }
 
@@ -797,8 +797,8 @@ public class StringExtensionsTests
         var hexstr = RandomHelper.GetRandomBytes(2 + RandomHelper.GetRandomPositiveInt32() % 1024).ToLowerHex();
         var buf = new byte[hexstr.Length / 2];
         var split = hexstr.Length / 2 + RandomHelper.GetRandomInt32() % 2;
-        var seq1 = new ByteSeq(null!, hexstr[..split].Select(x => (byte)x).ToArray());
-        var seq2 = new ByteSeq(seq1, hexstr[split..].Select(x => (byte)x).ToArray());
+        var seq1 = new ByteSeq(null!, [.. hexstr[..split].Select(x => (byte)x)]);
+        var seq2 = new ByteSeq(seq1, [.. hexstr[split..].Select(x => (byte)x)]);
         new ReadOnlySequence<byte>(seq1, 0, seq2, seq2.Memory.Length).ToBytesFromHexUtf8(buf);
         Assert.Equal(buf, hexstr.ToHexBytes());
     }
@@ -810,8 +810,8 @@ public class StringExtensionsTests
         var hexstr = RandomHelper.GetRandomBytes(2 + RandomHelper.GetRandomPositiveInt32() % 1024).ToLowerHex();
         var buf = new byte[hexstr.Length / 2];
         var split = hexstr.Length / 2 + RandomHelper.GetRandomInt32() % 2;
-        var seq1 = new CharSeq(null!, hexstr[..split].ToArray());
-        var seq2 = new CharSeq(seq1, hexstr[split..].ToArray());
+        var seq1 = new CharSeq(null!, [.. hexstr[..split]]);
+        var seq2 = new CharSeq(seq1, [.. hexstr[split..]]);
         new ReadOnlySequence<char>(seq1, 0, seq2, seq2.Memory.Length).ToBytesFromHexUtf8(buf);
         Assert.Equal(buf, hexstr.ToHexBytes());
     }
@@ -856,7 +856,7 @@ public class StringExtensionsTests
     {
         var expected = CrappyToBytes(str);
         var data = new byte[expected.Length];
-        ((ReadOnlySpan<byte>)str.Select(x => (byte)x).ToArray().AsSpan()).ToBytesFromHexUtf8(data);
+        ((ReadOnlySpan<byte>)[.. str.Select(x => (byte)x)]).ToBytesFromHexUtf8(data);
         Assert.Equal(expected, data);
     }
 
@@ -884,7 +884,7 @@ public class StringExtensionsTests
     {
         var expected = CrappyToBytes(str);
         var data = new char[expected.Length];
-        ((ReadOnlySpan<byte>)str.Select(x => (byte)x).ToArray().AsSpan()).ToBytesFromHexUtf8(data);
+        ((ReadOnlySpan<byte>)[.. str.Select(x => (byte)x)]).ToBytesFromHexUtf8(data);
         Assert.Equal(expected.Select(x => (char)x), data);
     }
 

@@ -24,21 +24,21 @@ public class HexByteStringConverterTests
     public void Read_String_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef""}", DefaultJsonSerializerOptions);
-        Assert.Equal("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", obj?.A);
+        Assert.Equal("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", obj!.A);
     }
 
     [Fact]
     public void Read_UppercaseString_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""1234567890Abcdef1234567890abcdef1234567890abcdef1234567890abcdeF""}", DefaultJsonSerializerOptions);
-        Assert.Equal("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", obj?.A);
+        Assert.Equal("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", obj!.A);
     }
 
     [Fact]
     public void Read_0xString_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef""}", DefaultJsonSerializerOptions);
-        Assert.Equal("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", obj?.A);
+        Assert.Equal("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", obj!.A);
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class HexByteStringConverterTests
     public void Read_EmptyString_ReturnsEmpty()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""""}", AllowEmptyJsonSerializerOptions);
-        Assert.Equal("", obj?.A);
+        Assert.Equal("", obj!.A);
     }
 
     [Fact]

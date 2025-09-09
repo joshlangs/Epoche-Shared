@@ -21,7 +21,7 @@ public class BigIntegerConverterTests
     public void Read_String_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""-123""}", JsonSerializerOptions);
-        Assert.Equal(new BigInteger(-123), obj?.A);
+        Assert.Equal(new BigInteger(-123), obj!.A);
     }
 
 
@@ -47,7 +47,7 @@ public class BigIntegerConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains($@"""{value}""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 
     [Theory]

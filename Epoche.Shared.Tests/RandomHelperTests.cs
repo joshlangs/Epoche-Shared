@@ -56,7 +56,7 @@ public class RandomHelperTests
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void GetRandomBytes_EmptySpan_DoesNotThrow() => RandomHelper.GetRandomBytes(Array.Empty<byte>().AsSpan());
+    public void GetRandomBytes_EmptySpan_DoesNotThrow() => RandomHelper.GetRandomBytes([]);
 
     [Fact]
     [Trait("Type", "Unit")]

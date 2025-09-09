@@ -8,6 +8,7 @@ sealed class SingletonServiceWrapper<TService> : IHostedService where TService :
 
     public SingletonServiceWrapper(TService service)
     {
+        ArgumentNullException.ThrowIfNull(service);
         HostedService = (service as IHostedService) ?? throw new InvalidOperationException($"{service?.GetType().Name} does not implement IHostedService");
     }
     public Task StartAsync(CancellationToken cancellationToken) => HostedService.StartAsync(cancellationToken);

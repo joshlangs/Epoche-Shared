@@ -20,7 +20,7 @@ public class DecimalConverterTests
     public void Read_String_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""1.23""}", JsonSerializerOptions);
-        Assert.Equal(1.23m, obj?.A);
+        Assert.Equal(1.23m, obj!.A);
     }
 
     [Theory]
@@ -45,7 +45,7 @@ public class DecimalConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains($@"""{value}""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 
     [Theory]

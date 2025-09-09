@@ -20,7 +20,7 @@ public class DateOnlyConverterTests
     public void Read_String_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""1234-12-10""}", JsonSerializerOptions);
-        Assert.Equal(new DateOnly(1234, 12, 10), obj?.A);
+        Assert.Equal(new DateOnly(1234, 12, 10), obj!.A);
     }
 
     [Theory]
@@ -50,6 +50,6 @@ public class DateOnlyConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains(@"""0123-09-04""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 }

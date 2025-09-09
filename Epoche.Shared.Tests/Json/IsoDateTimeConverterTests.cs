@@ -24,7 +24,7 @@ public sealed class IsoDateTimeConverterTests
         {
             var formatted = now.ToString(format);
             var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""" + formatted + @"""}", JsonSerializerOptions);
-            Assert.Equal(IsoDateCheater.Parse(formatted), obj?.A);
+            Assert.Equal(IsoDateCheater.Parse(formatted), obj!.A);
         }
     }
 
@@ -45,7 +45,7 @@ public sealed class IsoDateTimeConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains(now.ToString("O"), s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public sealed class IsoDateTimeConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains(date.ToString("O"), s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public sealed class IsoDateTimeConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains(date.ToString("O"), s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 
     [Fact]
@@ -78,6 +78,6 @@ public sealed class IsoDateTimeConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains(date.ToString("O"), s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, date);
+        Assert.Equal(obj!.A, date);
     }
 }

@@ -5,8 +5,8 @@ namespace Epoche.Shared;
 
 public class IsoDateCheaterTests
 {
-    static readonly string[] Formats = new[]
-    {
+    static readonly string[] Formats =
+    [
         "yyyy-MM-dd'T'HH:mm:ss'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.f'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.ff'Z'",
@@ -15,7 +15,7 @@ public class IsoDateCheaterTests
         "yyyy-MM-dd'T'HH:mm:ss.fffff'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'",
         "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'"
-    };
+    ];
 
     [Fact]
     [Trait("Type", "Unit")]

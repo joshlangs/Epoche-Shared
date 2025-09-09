@@ -5,11 +5,15 @@ namespace Epoche.Shared;
 
 public static class RandomHelper
 {
-    static readonly char[] LowerHexChars = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+    static readonly char[] LowerHexChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
     public static byte[] GetRandomBytes(int count) => RandomNumberGenerator.GetBytes(count);
 
-    public static void GetRandomBytes(byte[] buf) => RandomNumberGenerator.Fill((Span<byte>)(buf ?? throw new ArgumentNullException(nameof(buf))));
+    public static void GetRandomBytes(byte[] buf)
+    {
+        ArgumentNullException.ThrowIfNull(buf);
+        RandomNumberGenerator.Fill(buf.AsSpan());
+    }
 
     public static void GetRandomBytes(Span<byte> buf) => RandomNumberGenerator.Fill(buf);
 
@@ -59,10 +63,7 @@ public static class RandomHelper
 
     public static string GetRandomLowerHex(int charCount)
     {
-        if (charCount < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(charCount));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(charCount);
         if (charCount == 0)
         {
             return "";

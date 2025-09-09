@@ -27,11 +27,18 @@ public static class TaskExtensions
         OnException?.Invoke(task);
     }
 
-    public static void SwallowExceptions(this Task task) => _ = task.ContinueWith(SwallowException, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+    public static void SwallowExceptions(this Task task)
+    {
+        if (task.IsCompletedSuccessfully)
+        {
+            return;
+        }
+        _ = task.ContinueWith(SwallowException, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+    }
 
     public static void SwallowExceptions(this ValueTask task)
     {
-        if (task.IsCompleted)
+        if (task.IsCompletedSuccessfully)
         {
             return;
         }
@@ -40,7 +47,7 @@ public static class TaskExtensions
 
     public static void SwallowExceptions<T>(this ValueTask<T> task)
     {
-        if (task.IsCompleted)
+        if (task.IsCompletedSuccessfully)
         {
             return;
         }

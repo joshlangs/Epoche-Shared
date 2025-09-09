@@ -26,10 +26,7 @@ public static class TotpHelper
 
     static int CalculatePassword(byte[] seed, long unixTimeSeconds)
     {
-        if (seed is null)
-        {
-            throw new ArgumentNullException(nameof(seed));
-        }
+        ArgumentNullException.ThrowIfNull(seed);
 
         var tempArray = BitConverter.GetBytes(unixTimeSeconds / IntervalTimeInSeconds).ReverseArrayInPlace();        
         using var hmac = new HMACSHA1(seed);

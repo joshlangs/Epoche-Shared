@@ -3,7 +3,7 @@
 namespace Epoche.Shared;
 public static class ObjectIdHelper
 {
-    static readonly ConditionalWeakTable<object, ObjectData> Table = new();
+    static readonly ConditionalWeakTable<object, ObjectData> Table = [];
     static ObjectData CreateObjectData(object _) => new();
 
     class ObjectData

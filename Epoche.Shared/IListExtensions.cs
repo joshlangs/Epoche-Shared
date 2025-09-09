@@ -38,18 +38,9 @@ public static class IListExtensions
     /// </summary>
     public static bool SortedInsert<T>(this IList<T> items, T item, IComparer<T> comparer)
     {
-        if (items is null)
-        {
-            throw new ArgumentNullException(nameof(items));
-        }
-        if (item is null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
-        if (comparer is null)
-        {
-            throw new ArgumentNullException(nameof(comparer));
-        }
+        ArgumentNullException.ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(comparer);
         var index = items.BinarySearch(item, comparer);
         if (index >= 0)
         {
@@ -64,18 +55,9 @@ public static class IListExtensions
     /// </summary>
     public static bool SortedDelete<T>(this IList<T> items, T item, IComparer<T> comparer)
     {
-        if (items is null)
-        {
-            throw new ArgumentNullException(nameof(items));
-        }
-        if (item is null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
-        if (comparer is null)
-        {
-            throw new ArgumentNullException(nameof(comparer));
-        }
+        ArgumentNullException.ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(comparer);
         var index = items.BinarySearch(item, comparer);
         if (index < 0)
         {
@@ -90,18 +72,9 @@ public static class IListExtensions
     /// </summary>
     public static int BinarySearch<T>(this IList<T> items, T item, IComparer<T> comparer)
     {
-        if (items is null)
-        {
-            throw new ArgumentNullException(nameof(items));
-        }
-        if (item is null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
-        if (comparer is null)
-        {
-            throw new ArgumentNullException(nameof(comparer));
-        }
+        ArgumentNullException.ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(comparer);
         if (items.Count == 0)
         {
             return ~0;

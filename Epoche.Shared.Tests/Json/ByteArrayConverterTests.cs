@@ -20,14 +20,14 @@ public class ByteArrayConverterTests
     public void Read_String_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""0af8""}", JsonSerializerOptions);
-        Assert.Equal(new byte[] { 0xa, 0xf8 }, obj?.A);
+        Assert.Equal(new byte[] { 0xa, 0xf8 }, obj!.A);
     }
 
     [Fact]
     public void Read_EmptyString_ReturnsEmptyArray()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""""}", JsonSerializerOptions);
-        Assert.Equal(Array.Empty<byte>(), obj?.A);
+        Assert.Equal([], obj!.A!);
     }
 
     [Fact]
@@ -39,10 +39,10 @@ public class ByteArrayConverterTests
     [Fact]
     public void Write_Roundtrips()
     {
-        var test = new TestObj { A = new byte[] { 0xe3, 0x70 } };
+        var test = new TestObj { A = [0xe3, 0x70] };
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains(@"""e370""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 }

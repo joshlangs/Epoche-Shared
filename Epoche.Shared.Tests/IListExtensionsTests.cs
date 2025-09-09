@@ -5,8 +5,8 @@ using Xunit;
 namespace Epoche.Shared;
 public class IListExtensionsTests
 {
-    readonly int[] Source = new[] { 1, 2, 3, 4, 5 };
-    IList<int> GetData() => Source.ToList();
+    readonly int[] Source = [1, 2, 3, 4, 5];
+    IList<int> GetData() => [.. Source];
 
     [Fact]
     [Trait("Type", "Unit")]

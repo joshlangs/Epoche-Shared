@@ -10,7 +10,7 @@ public class IListExtensionsTests_Sorted
 
     readonly List<int> ItemsZero = new() { 0 };
     readonly List<int> ItemsOne = new() { 1 };
-    readonly List<int> TenEven = Enumerable.Range(0, 10).Select(x => x * 2).ToList();
+    readonly List<int> TenEven = [.. Enumerable.Range(0, 10).Select(x => x * 2)];
 
     readonly Random Random = new();
 

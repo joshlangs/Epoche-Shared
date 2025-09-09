@@ -8,7 +8,8 @@ public sealed class PropertyComparer<T, TProperty> : IComparer<T> where T : clas
 
     public PropertyComparer(Func<T, TProperty> getProperty, bool ascending = true, IComparer<TProperty>? comparer = null, bool objectsEqualIfPropertiesEqual = false)
     {
-        GetProperty = getProperty ?? throw new ArgumentNullException(nameof(getProperty));
+        ArgumentNullException.ThrowIfNull(getProperty);
+        GetProperty = getProperty;
         Ascending = ascending;
         Comparer = comparer ?? Comparer<TProperty>.Default;
         ObjectsEqualIfPropertiesEqual = objectsEqualIfPropertiesEqual;

@@ -12,10 +12,7 @@ public static class Base32
 
     public static string Encode(byte[] data, bool withPadding = false)
     {
-        if (data is null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         int i = 0, index = 0, digit;
         int current_byte, next_byte;

@@ -9,14 +9,14 @@ public class PropertyComparerTests
         public int X { get; init; }
     }
 
-    readonly TestClass[] Items = new[]
-    {
+    readonly TestClass[] Items =
+    [
         new TestClass { X = 3 },
         new TestClass { X = 1 },
         new TestClass { X = 5 },
         new TestClass { X = 2 },
         new TestClass { X = 4 }
-    };
+    ];
 
     readonly PropertyComparer<TestClass, int> Ascending = new(x => x.X, true);
     readonly PropertyComparer<TestClass, int> Descending = new(x => x.X, false);

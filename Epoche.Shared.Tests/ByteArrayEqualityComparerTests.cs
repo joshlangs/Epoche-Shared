@@ -11,7 +11,7 @@ public class ByteArrayEqualityComparerTests
 
     [Fact]
     [Trait("Type", "Unit")]
-    public void GetHashCode_Empty_Returns0() => Assert.Equal(0, ByteArrayEqualityComparer.Instance.GetHashCode(Array.Empty<byte>()));
+    public void GetHashCode_Empty_Returns0() => Assert.Equal(0, ByteArrayEqualityComparer.Instance.GetHashCode([]));
 
     [Fact]
     [Trait("Type", "Unit")]
@@ -44,14 +44,14 @@ public class ByteArrayEqualityComparerTests
     public void Equals_EqualArrays_ReturnsTrue()
     {
         var bytes = RandomHelper.GetRandomBytes(32);
-        Assert.True(ByteArrayEqualityComparer.Instance.Equals(bytes, bytes.ToArray()));
+        Assert.True(ByteArrayEqualityComparer.Instance.Equals(bytes, [.. bytes]));
     }
     [Fact]
     [Trait("Type", "Unit")]
     public void Equals_UnequalLengthArrays_ReturnsFalse()
     {
         var bytes = RandomHelper.GetRandomBytes(32);
-        Assert.False(ByteArrayEqualityComparer.Instance.Equals(bytes, bytes.Take(31).ToArray()));
+        Assert.False(ByteArrayEqualityComparer.Instance.Equals(bytes, [.. bytes.Take(31)]));
     }
     [Fact]
     [Trait("Type", "Unit")]

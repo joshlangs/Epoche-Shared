@@ -21,7 +21,7 @@ public class BigFractionConverterTests
     public void Read_String_ReturnsValue()
     {
         var obj = JsonSerializer.Deserialize<TestObj>(@"{""A"":""1.23""}", JsonSerializerOptions);
-        Assert.Equal(BigFraction.Parse("1.23"), obj?.A);
+        Assert.Equal(BigFraction.Parse("1.23"), obj!.A);
     }
 
     [Theory]
@@ -45,7 +45,7 @@ public class BigFractionConverterTests
         var s = JsonSerializer.Serialize(test, JsonSerializerOptions);
         Assert.Contains($@"""{value}""", s);
         var obj = JsonSerializer.Deserialize<TestObj>(s, JsonSerializerOptions);
-        Assert.Equal(obj?.A, test.A);
+        Assert.Equal(obj!.A, test.A);
     }
 
     [Theory]

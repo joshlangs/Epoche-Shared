@@ -11,7 +11,8 @@ public sealed class SHA256Stream : Stream
 
     public SHA256Stream(Stream source)
     {
-        Source = source ?? throw new ArgumentNullException(nameof(source));
+        ArgumentNullException.ThrowIfNull(source);
+        Source = source;
     }
 
     byte[]? sha256Hash;
@@ -67,7 +68,7 @@ public sealed class SHA256Stream : Stream
 
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        var r = await Source.ReadAsync(buffer, offset, count, cancellationToken);
+        var r = await Source.ReadAsync(buffer.AsMemory(offset, count), cancellationToken);
         if (r > 0)
         {
             IncrementalSHA256.AppendData(buffer, offset, r);

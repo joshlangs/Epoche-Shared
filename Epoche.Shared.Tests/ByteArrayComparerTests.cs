@@ -15,30 +15,30 @@ public class ByteArrayComparerTests
     [Fact]
     public void NotNullGreaterThanNull()
     {
-        Assert.Equal(-1, ByteArrayComparer.Instance.Compare(Array.Empty<byte>(), null));
-        Assert.Equal(1, ByteArrayComparer.Instance.Compare(null, Array.Empty<byte>()));
+        Assert.Equal(-1, ByteArrayComparer.Instance.Compare([], null));
+        Assert.Equal(1, ByteArrayComparer.Instance.Compare(null, []));
     }
 
     [Fact]
-    public void EmptyEqualsEmpty() => Assert.Equal(0, ByteArrayComparer.Instance.Compare(Array.Empty<byte>(), Array.Empty<byte>()));
+    public void EmptyEqualsEmpty() => Assert.Equal(0, ByteArrayComparer.Instance.Compare([], []));
 
     [Fact]
-    public void SameEqualsSame() => Assert.Equal(0, ByteArrayComparer.Instance.Compare(new byte[] { 1, 2, 3 }, new byte[] { 1, 2, 3 }));
+    public void SameEqualsSame() => Assert.Equal(0, ByteArrayComparer.Instance.Compare([1, 2, 3], [1, 2, 3]));
 
     [Fact]
     public void LongerGreaterThanShorter()
     {
-        Assert.Equal(-1, ByteArrayComparer.Instance.Compare(new byte[] { 1, 2, 3 }, new byte[] { 1, 2, 3, 4 }));
-        Assert.Equal(1, ByteArrayComparer.Instance.Compare(new byte[] { 1, 2, 3, 4 }, new byte[] { 1, 2, 3 }));
+        Assert.Equal(-1, ByteArrayComparer.Instance.Compare([1, 2, 3], [1, 2, 3, 4]));
+        Assert.Equal(1, ByteArrayComparer.Instance.Compare([1, 2, 3, 4], [1, 2, 3]));
     }
 
     [Fact]
     public void SortedByteOrder()
     {
-        Assert.Equal(-1, ByteArrayComparer.Instance.Compare(new byte[] { 0, 2, 3, 4 }, new byte[] { 1, 2, 3 }));
-        Assert.Equal(1, ByteArrayComparer.Instance.Compare(new byte[] { 1, 2, 3 }, new byte[] { 0, 2, 3, 4 }));
+        Assert.Equal(-1, ByteArrayComparer.Instance.Compare([0, 2, 3, 4], [1, 2, 3]));
+        Assert.Equal(1, ByteArrayComparer.Instance.Compare([1, 2, 3], [0, 2, 3, 4]));
 
-        Assert.Equal(1, ByteArrayComparer.Instance.Compare(new byte[] { 1, 2, 3, 4 }, new byte[] { 1, 2, 3 }));
-        Assert.Equal(-1, ByteArrayComparer.Instance.Compare(new byte[] { 1, 2, 3 }, new byte[] { 1, 2, 3, 4 }));
+        Assert.Equal(1, ByteArrayComparer.Instance.Compare([1, 2, 3, 4], [1, 2, 3]));
+        Assert.Equal(-1, ByteArrayComparer.Instance.Compare([1, 2, 3], [1, 2, 3, 4]));
     }
 }

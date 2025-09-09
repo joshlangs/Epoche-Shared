@@ -6,10 +6,7 @@ public static class MemoryStreamExtensions
     /// </summary>
     public static ArraySegment<byte> GetDataBuffer(this MemoryStream memoryStream)
     {
-        if (memoryStream is null)
-        {
-            throw new ArgumentNullException(nameof(memoryStream));
-        }
+        ArgumentNullException.ThrowIfNull(memoryStream);
 
         return memoryStream.TryGetBuffer(out var buf)
             ? buf
@@ -21,10 +18,7 @@ public static class MemoryStreamExtensions
     /// </summary>
     public static Span<byte> GetDataSpan(this MemoryStream memoryStream)
     {
-        if (memoryStream is null)
-        {
-            throw new ArgumentNullException(nameof(memoryStream));
-        }
+        ArgumentNullException.ThrowIfNull(memoryStream);
 
         return memoryStream.TryGetBuffer(out var buf)
             ? buf.AsSpan()
