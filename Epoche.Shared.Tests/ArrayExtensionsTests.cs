@@ -19,8 +19,7 @@ public class ArrayExtensionsTests
     public void ReverseArrayInPlace_Array_ReturnsReversedBytes()
     {
         var b = RandomHelper.GetRandomBytes(32);
-        var b2 = b.ToArray();
-        b2.Reverse();
+        var b2 = b.Reverse().ToArray();
         Assert.Equal(b.ReverseArrayInPlace(), b2);
     }
 

@@ -4,15 +4,15 @@ using Xunit;
 
 namespace Epoche.Shared.Json;
 
-public class TransactionHashConverterTests
+public class HexByteStringConverterTests
 {
     static readonly JsonSerializerOptions DefaultJsonSerializerOptions = new()
     {
-        Converters = { TransactionHashConverter.Default }
+        Converters = { HexByteStringConverter.Default }
     };
     static readonly JsonSerializerOptions AllowEmptyJsonSerializerOptions = new()
     {
-        Converters = { new TransactionHashConverter(32, 32, true) }
+        Converters = { new HexByteStringConverter(32, 32, true) }
     };
 
     class TestObj

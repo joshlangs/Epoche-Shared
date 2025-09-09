@@ -7,18 +7,18 @@ namespace Epoche.Shared.Json;
 /// This will read strings as lowercase hex characters, stripping leading '0x' and ensuring the length is as expected (by default, exactly 32 bytes / 64 characters).
 /// When serializing, strings are written as-is and without validation.
 /// </summary>
-public sealed class TransactionHashConverter : JsonConverter<string>
+public sealed class HexByteStringConverter : JsonConverter<string>
 {
-    public static readonly TransactionHashConverter Default = new();
+    public static readonly HexByteStringConverter Default = new();
 
     readonly int MinLength;
     readonly int MaxLength;
     readonly bool AllowEmpty;
 
-    public TransactionHashConverter() : this(32, 32, false) { }
+    public HexByteStringConverter() : this(32, 32, false) { }
 
     /// <param name="allowEmpty">If true, the empty string is allowed, but not "0x"</param>
-    public TransactionHashConverter(int minBytes, int maxBytes, bool allowEmpty)
+    public HexByteStringConverter(int minBytes, int maxBytes, bool allowEmpty)
     {
         MinLength = minBytes * 2;
         MaxLength = maxBytes * 2;

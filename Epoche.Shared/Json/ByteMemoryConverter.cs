@@ -3,15 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace Epoche.Shared.Json;
 
-public sealed class ByteArrayConverter : JsonConverter<byte[]>
+public sealed class ByteMemoryConverter : JsonConverter<Memory<byte>>
 {
     public static readonly ByteArrayConverter Instance = new();
 
-    public override byte[] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Memory<byte> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.String)
         {
-            throw new InvalidOperationException("Only string can be converted to byte[] with this converter");
+            throw new InvalidOperationException("Only string can be converted to Memory<byte> with this converter");
         }
 
         if (reader.HasValueSequence)
@@ -19,26 +19,26 @@ public sealed class ByteArrayConverter : JsonConverter<byte[]>
             var hexSequence = reader.ValueSequence;
             if (hexSequence.Length == 0)
             {
-                return Array.Empty<byte>();
+                return Memory<byte>.Empty;
             }
             var data = new byte[hexSequence.Length / 2];
             hexSequence.ToBytesFromHexUtf8(data);
-            return data;
+            return new(data);
         }
         else
         {
             var hexSpan = reader.ValueSpan;
             if (hexSpan.Length == 0)
             {
-                return Array.Empty<byte>();
+                return Memory<byte>.Empty;
             }
             var data = new byte[hexSpan.Length / 2];
             hexSpan.ToBytesFromHexUtf8(data);
-            return data;
+            return new(data);
         }
     }
 
-    public override void Write(Utf8JsonWriter writer, byte[] value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Memory<byte> value, JsonSerializerOptions options)
     {
         if (value.Length == 0)
         {
@@ -49,7 +49,7 @@ public sealed class ByteArrayConverter : JsonConverter<byte[]>
             value.Length <= 1024
             ? stackalloc byte[value.Length * 2]
             : new byte[value.Length * 2];
-        value.AsSpan().ToLowerHexUtf8(hex);
+        value.Span.ToLowerHexUtf8(hex);
         writer.WriteStringValue(hex);
     }
 }
