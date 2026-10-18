@@ -35,7 +35,7 @@ public sealed class Int128Converter : JsonConverter<Int128>
             }
         }
 
-        throw new FormatException("The value could not be parsed into a long");
+        throw new FormatException("The value could not be parsed into a Int128");
     }
 
     public override void Write(Utf8JsonWriter writer, Int128 value, JsonSerializerOptions options)
